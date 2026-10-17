@@ -1,0 +1,6 @@
+title: "AI Tech & Knowledge | الموسوعة الذكية"
+description: "Bilingual AI-Powered Tech & Science Magazine | مجلة تقنية ومعرفية تدار بالذكاء الاصطناعي"
+theme: minima
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
