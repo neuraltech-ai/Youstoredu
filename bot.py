@@ -58,7 +58,7 @@ headers = {
 }
 
 payload = {
-    "model": "anthropic/claude-3-haiku",
+    "model": "openai/gpt-4o-mini",
     "messages": [
         {"role": "user", "content": prompt}
     ]
