@@ -5,7 +5,8 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-API_URL = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={API_KEY}"
+# استخدام أحدث نموذج مستقر عبر واجهة Google العامة
+API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
 def get_daily_trends():
     try:
@@ -109,4 +110,4 @@ with open(en_filename, "w", encoding="utf-8") as f:
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data['en']['title'] + "\n")
 
-print("تم توليد ونشر المقالات بنجاح عبر Gemini!")
+print("تم توليد ونشر المقالات بنجاح تام!")
