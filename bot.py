@@ -3,10 +3,10 @@ import json
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
+import google.generativeai as genai
 
 API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-# استخدام أحدث نموذج مستقر عبر واجهة Google العامة
-API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+genai.configure(api_key=API_KEY)
 
 def get_daily_trends():
     try:
@@ -53,19 +53,10 @@ prompt = f"""
 }}
 """
 
-headers = {"Content-Type": "application/json"}
-payload = {
-    "contents": [{"parts": [{"text": prompt}]}]
-}
-
-response = requests.post(API_URL, json=payload, headers=headers, timeout=60)
-res_json = response.json()
-
-try:
-    raw_text = res_json["candidates"][0]["content"]["parts"][0]["text"]
-except Exception as e:
-    print(f"API Error Response: {res_json}")
-    raise e
+# استخدام النموذج الرسمي المتاح والمستقر
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content(prompt)
+raw_text = response.text
 
 if "```json" in raw_text:
     raw_text = raw_text.split("```json")[1].split("```")[0].strip()
@@ -110,4 +101,4 @@ with open(en_filename, "w", encoding="utf-8") as f:
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data['en']['title'] + "\n")
 
-print("تم توليد ونشر المقالات بنجاح تام!")
+print("تم توليد ونشر المقالات بنجاح عبر مكتبة Google الرسمية!")
