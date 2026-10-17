@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -47,15 +48,26 @@ prompt = f"""
   "en": {{
     "title": "Catchy SEO English Article Title",
     "description": "Short SEO meta description in English",
-    "category": "AI-Tech",
     "content": "Full English article content in Markdown"
   }}
 }}
 """
 
-# استخدام أحدث نموذج موصى به من جوجل
 model = genai.GenerativeModel('gemini-3.8-flash')
-response = model.generate_content(prompt)
+
+# محاولة توليد المحتوى مع الانتظار التلقائي في حال ضغط الحصة
+response = None
+for attempt in range(3):
+    try:
+        response = model.generate_content(prompt)
+        break
+    except Exception as e:
+        print(f"محاولة رقم {attempt + 1} فشلت، الانتظار 15 ثانية... الخطأ: {e}")
+        time.sleep(15)
+
+if not response:
+    raise Exception("فشلت جميع محاولات الاتصال بسبب ضغط الحصة، يجدر الانتظار دقيقتين ثم المحاولة.")
+
 raw_text = response.text
 
 if "```json" in raw_text:
@@ -101,4 +113,4 @@ with open(en_filename, "w", encoding="utf-8") as f:
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data['en']['title'] + "\n")
 
-print("تم توليد ونشر المقالات بنجاح عبر gemini-3.8-flash!")
+print("تم توليد ونشر المقالات بنجاح تام مع ميزة إعادة المحاولة الذكية!")
