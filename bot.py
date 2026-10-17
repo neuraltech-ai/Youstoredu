@@ -1,12 +1,11 @@
 import os
 import json
-import datetime
-import urllib.parse
-import xml.etree.ElementTree as ET
 import requests
+import xml.etree.ElementTree as ET
+from datetime import datetime
 
 API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-API_URL = "https://api.anthropic.com/v1/messages"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 def get_daily_trends():
     try:
@@ -54,14 +53,12 @@ prompt = f"""
 """
 
 headers = {
-    "x-api-key": API_KEY,
-    "anthropic-version": "2023-06-01",
-    "content-type": "application/json"
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
 }
 
 payload = {
-    "model": "claude-3-5-haiku-20241022",
-    "max_tokens": 4000,
+    "model": "anthropic/claude-3.5-haiku",
     "messages": [
         {"role": "user", "content": prompt}
     ]
@@ -69,53 +66,56 @@ payload = {
 
 response = requests.post(API_URL, json=payload, headers=headers, timeout=60)
 res_json = response.json()
-raw_text = res_json["content"][0]["text"]
-article = json.loads(raw_text)
 
-img_prompt = urllib.parse.quote(article["image_prompt"])
-image_url = f"https://image.pollinations.ai/prompt/{img_prompt}?width=1024&height=576&nologo=true"
+try:
+    raw_text = res_json["choices"][0]["message"]["content"]
+except Exception as e:
+    print(f"API Error Response: {res_json}")
+    raise e
 
-now = datetime.datetime.now()
-date_str = now.strftime("%Y-%m-%d")
-time_slug = now.strftime("%H%M%S")
+# تنظيف وتحليل الـ JSON الناتج من الذكاء الاصطناعي
+if "```json" in raw_text:
+    raw_text = raw_text.split("```json")[1].split("```")[0].strip()
+elif "```" in raw_text:
+    raw_text = raw_text.split("```")[1].split("```")[0].strip()
 
-# حفظ النسخة العربية
-ar_data = article["ar"]
-ar_file = f"_posts/{date_str}-ar-{time_slug}.md"
-ar_md = f"""---
+data = json.loads(raw_text)
+
+os.makedirs("_posts", exist_ok=True)
+date_str = datetime.now().strftime("%Y-%m-%d")
+
+# حفظ المقال العربي
+ar_filename = f"_posts/{date_str}-{data['ar']['title'].replace(' ', '-').lower()[:30]}.md"
+ar_frontmatter = f"""---
 layout: post
-title: "{ar_data['title'].replace('"', '')}"
-description: "{ar_data['description'].replace('"', '')}"
-date: {now.strftime("%Y-%m-%d %H:%M:%S")} +0000
-categories: {ar_data['category']}
+title: "{data['ar']['title']}"
+date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S +0000')}
+categories: [{data['ar']['category']}]
+lang: ar
 ---
 
-![{ar_data['title']}]({image_url})
-
-{ar_data['content']}
+{data['ar']['content']}
 """
-with open(ar_file, "w", encoding="utf-8") as f:
-    f.write(ar_md)
+with open(ar_filename, "w", encoding="utf-8") as f:
+    f.write(ar_frontmatter)
 
-# حفظ النسخة الإنجليزية
-en_data = article["en"]
-en_file = f"_posts/{date_str}-en-{time_slug}.md"
-en_md = f"""---
+# حفظ المقال الإنجليزي
+en_filename = f"_posts/{date_str}-en-{data['en']['title'].replace(' ', '-').lower()[:30]}.md"
+en_frontmatter = f"""---
 layout: post
-title: "{en_data['title'].replace('"', '')}"
-description: "{en_data['description'].replace('"', '')}"
-date: {now.strftime("%Y-%m-%d %H:%M:%S")} +0000
-categories: {en_data['category']}
+title: "{data['en']['title']}"
+date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S +0000')}
+categories: [{data['en']['category']}]
+lang: en
 ---
 
-![{en_data['title']}]({image_url})
-
-{en_data['content']}
+{data['en']['content']}
 """
-with open(en_file, "w", encoding="utf-8") as f:
-    f.write(en_md)
+with open(en_filename, "w", encoding="utf-8") as f:
+    f.write(en_frontmatter)
 
+# حفظ العنوان في السجل لتجنب تكراره مستقبلاً
 with open(history_file, "a", encoding="utf-8") as f:
-    f.write(ar_data["title"] + " | " + en_data["title"] + "\n")
+    f.write(data['en']['title'] + "\n")
 
-print("تم نشر المقالين عبر Claude Haiku بنجاح!")
+print("تم توليد ونشر المقالات بنجاح!")
