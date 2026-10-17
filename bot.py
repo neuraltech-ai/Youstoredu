@@ -42,12 +42,13 @@ prompt = f"""
   "ar": {{
     "title": "عنوان المقال الجذاب بالعربية",
     "description": "وصف قصير لمحركات البحث بالعربية",
-    "category": "تقنية-ومعرفة",
+    "category": "تقنية",
     "content": "محتوى المقال العربي كاملاً بصيغة Markdown"
   }},
   "en": {{
     "title": "Catchy SEO English Article Title",
     "description": "Short SEO meta description in English",
+    "category": "AI-Tech",
     "content": "Full English article content in Markdown"
   }}
 }}
@@ -55,7 +56,6 @@ prompt = f"""
 
 model = genai.GenerativeModel('gemini-3.8-flash')
 
-# محاولة توليد المحتوى مع الانتظار التلقائي في حال ضغط الحصة
 response = None
 for attempt in range(3):
     try:
@@ -66,7 +66,7 @@ for attempt in range(3):
         time.sleep(15)
 
 if not response:
-    raise Exception("فشلت جميع محاولات الاتصال بسبب ضغط الحصة، يجدر الانتظار دقيقتين ثم المحاولة.")
+    raise Exception("فشلت محاولات الاتصال.")
 
 raw_text = response.text
 
@@ -80,37 +80,46 @@ data = json.loads(raw_text)
 os.makedirs("_posts", exist_ok=True)
 date_str = datetime.now().strftime("%Y-%m-%d")
 
+# استخدام تصنيفات افتراضية آمنة في حال عدم وجودها
+ar_title = data.get('ar', {}).get('title', 'مقال تقني جديد')
+ar_cat = data.get('ar', {}).get('category', 'تقنية')
+ar_content = data.get('ar', {}).get('content', 'محتوى المقال قيد التحديث.')
+
+en_title = data.get('en', {}).get('title', 'New Tech Article')
+en_cat = data.get('en', {}).get('category', 'AI-Tech')
+en_content = data.get('en', {}).get('content', 'Article content coming soon.')
+
 # حفظ المقال العربي
-ar_filename = f"_posts/{date_str}-{data['ar']['title'].replace(' ', '-').lower()[:30]}.md"
+ar_filename = f"_posts/{date_str}-{ar_title.replace(' ', '-').lower()[:30]}.md"
 ar_frontmatter = f"""---
 layout: post
-title: "{data['ar']['title']}"
+title: "{ar_title}"
 date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S +0000')}
-categories: [{data['ar']['category']}]
+categories: [{ar_cat}]
 lang: ar
 ---
 
-{data['ar']['content']}
+{ar_content}
 """
 with open(ar_filename, "w", encoding="utf-8") as f:
     f.write(ar_frontmatter)
 
 # حفظ المقال الإنجليزي
-en_filename = f"_posts/{date_str}-en-{data['en']['title'].replace(' ', '-').lower()[:30]}.md"
+en_filename = f"_posts/{date_str}-en-{en_title.replace(' ', '-').lower()[:30]}.md"
 en_frontmatter = f"""---
 layout: post
-title: "{data['en']['title']}"
+title: "{en_title}"
 date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S +0000')}
-categories: [{data['en']['category']}]
+categories: [{en_cat}]
 lang: en
 ---
 
-{data['en']['content']}
+{en_content}
 """
 with open(en_filename, "w", encoding="utf-8") as f:
     f.write(en_frontmatter)
 
 with open(history_file, "a", encoding="utf-8") as f:
-    f.write(data['en']['title'] + "\n")
+    f.write(en_title + "\n")
 
-print("تم توليد ونشر المقالات بنجاح تام مع ميزة إعادة المحاولة الذكية!")
+print("تم توليد ونشر المقالات بنجاح تام وبشكل آمن!")
