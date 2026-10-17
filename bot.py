@@ -58,7 +58,7 @@ headers = {
 }
 
 payload = {
-    "model": "anthropic/claude-3.5-haiku",
+    "model": "anthropic/claude-3-haiku",
     "messages": [
         {"role": "user", "content": prompt}
     ]
