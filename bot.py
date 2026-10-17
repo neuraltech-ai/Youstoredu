@@ -53,8 +53,8 @@ prompt = f"""
 }}
 """
 
-# استخدام أحدث نموذج مستقر ومدعوم
-model = genai.GenerativeModel('gemini-2.5-flash')
+# استخدام أحدث نموذج موصى به من جوجل
+model = genai.GenerativeModel('gemini-3.8-flash')
 response = model.generate_content(prompt)
 raw_text = response.text
 
@@ -101,4 +101,4 @@ with open(en_filename, "w", encoding="utf-8") as f:
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data['en']['title'] + "\n")
 
-print("تم توليد ونشر المقالات بنجاح عبر gemini-2.5-flash!")
+print("تم توليد ونشر المقالات بنجاح عبر gemini-3.8-flash!")
