@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
+API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
 def get_daily_trends():
     try:
@@ -52,28 +52,20 @@ prompt = f"""
 }}
 """
 
-headers = {
-    "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json"
-}
-
+headers = {"Content-Type": "application/json"}
 payload = {
-    "model": "openai/gpt-4o-mini",
-    "messages": [
-        {"role": "user", "content": prompt}
-    ]
+    "contents": [{"parts": [{"text": prompt}]}]
 }
 
 response = requests.post(API_URL, json=payload, headers=headers, timeout=60)
 res_json = response.json()
 
 try:
-    raw_text = res_json["choices"][0]["message"]["content"]
+    raw_text = res_json["candidates"][0]["content"]["parts"][0]["text"]
 except Exception as e:
     print(f"API Error Response: {res_json}")
     raise e
 
-# تنظيف وتحليل الـ JSON الناتج من الذكاء الاصطناعي
 if "```json" in raw_text:
     raw_text = raw_text.split("```json")[1].split("```")[0].strip()
 elif "```" in raw_text:
@@ -114,8 +106,7 @@ lang: en
 with open(en_filename, "w", encoding="utf-8") as f:
     f.write(en_frontmatter)
 
-# حفظ العنوان في السجل لتجنب تكراره مستقبلاً
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data['en']['title'] + "\n")
 
-print("تم توليد ونشر المقالات بنجاح!")
+print("تم توليد ونشر المقالات بنجاح عبر Gemini المجاني!")
