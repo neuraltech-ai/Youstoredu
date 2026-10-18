@@ -43,15 +43,11 @@ def call_gemini_with_rotation(prompt_text):
             try:
                 genai.configure(api_key=key)
                 model = genai.GenerativeModel(model_name)
-                print(f"جاري المحاولة بالمفتاح {i+1} والنموذج {model_name}...")
                 response = model.generate_content(prompt_text)
                 if response and response.text:
                     return response.text
             except Exception as e:
-                print(f"فشل المفتاح {i+1} مع {model_name}: {e}")
-                time.sleep(2)
-    
-    print("تنبيه: جميع المفاتيح استنفدت حصتها مؤقتاً، التبديل إلى مولد المقالات الاحترافي الذاتي...")
+                time.sleep(1)
     return None
 
 history_file = "history.txt"
@@ -68,7 +64,6 @@ prompt = f"""
 أحدث المستجدات اليوم: {live_news}
 اكتب مقالاً تقنياً احترافياً وعميقاً باللغتين العربية والإنجليزية بصيغة JSON صالح فقط بهذا الهيكل الدقيق وبدون أي نص خارجه:
 {{
-  "image_prompt": "Futuristic high tech editorial illustration 8k",
   "ar": {{
     "title": "أحدث تطورات الذكاء الاصطناعي والأتمتة الرقمية الحديثة",
     "description": "دليلك الشامل لأحدث أدوات وتقنيات الذكاء الاصطناعي الرقمية وكيفية توظيفها برمجياً.",
@@ -97,7 +92,6 @@ try:
     data = json.loads(raw_resp)
 except Exception:
     data = {
-        "image_prompt": "Futuristic technology and artificial intelligence editorial illustration 8k",
         "ar": {
             "title": f"ثورة الذكاء الاصطناعي: {news_title[:40]}",
             "description": "تحليل لأحدث المستجدات التقنية وأدوات البرمجة الحديثة.",
@@ -117,10 +111,15 @@ except Exception:
 os.makedirs("_posts", exist_ok=True)
 date_str = datetime.now().strftime("%Y-%m-%d")
 
-img_prompt = data.get("image_prompt", "Futuristic technology art 8k")
-encoded_prompt = urllib.parse.quote(img_prompt)
-seed = int(time.time()) % 10000
-image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1000&height=520&nologo=true&seed={seed}"
+# قائمة صور تقنية ثابتة وعالية الجودة تعمل للأبد دون أي حدود
+tech_images = [
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop"
+]
+image_url = tech_images[int(time.time()) % len(tech_images)]
 
 for lang_key, default_cat, prefix in [("ar", "تقنية", ""), ("en", "AI-Tech", "en-")]:
     lang_obj = data.get(lang_key, {})
@@ -159,4 +158,4 @@ verified: true
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data.get('en', {}).get('title', 'Article') + "\n")
 
-print("تم نشر المقالات بنجاح تام وبشكل مضمون عبر النظام الاحتياطي الذكي!")
+print("تم التحديث بنجاح واعتماد الصور التقنية المستقرة!")
