@@ -8,8 +8,16 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 import google.generativeai as genai
 
-API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-genai.configure(api_key=API_KEY)
+# جلب عدة مفاتيح API إن وجدت للتبديل التلقائي عند نفاد الحصة
+api_keys = [
+    os.environ.get("ANTHROPIC_API_KEY"),
+    os.environ.get("GEMINI_API_KEY_2"),
+    os.environ.get("GEMINI_API_KEY_3")
+]
+api_keys = [k for k in api_keys if k] # تنظيف المفاتيح الفارغة
+
+if not api_keys:
+    raise Exception("لم يتم العثور على أي مفتاح API صالح في إعدادات GitHub Secrets.")
 
 def get_live_tech_news():
     feeds = [
@@ -33,20 +41,25 @@ def get_live_tech_news():
             continue
     return list(dict.fromkeys(headlines))[:15]
 
-def call_gemini(prompt_text):
-    model = genai.GenerativeModel('gemini-3.8-flash')
-    for attempt in range(3):
+def call_gemini_with_rotation(prompt_text):
+    """محاولة الاتصال بالذكاء الاصطناعي مع تجربة عدة مفاتيح تباعاً في حال نفاد الحصة"""
+    for i, key in enumerate(api_keys):
         try:
+            genai.configure(api_key=key)
+            model = genai.GenerativeModel('gemini-3.8-flash')
+            print(f"جاري المحاولة باستخدام المفتاح رقم {i + 1}...")
             response = model.generate_content(prompt_text)
             if response and response.text:
                 return response.text
         except Exception as e:
-            print(f"محاولة اتصال رقم {attempt + 1} فشلت، الانتظار 15 ثانية... السبب: {e}")
-            time.sleep(15)
-    raise Exception("تعذر الاتصال بواجهة Gemini.")
+            print(f"المفتاح رقم {i + 1} واجه خطأ أو استنفد حصته: {e}")
+            if i < len(api_keys) - 1:
+                print("التبديل إلى المفتاح الاحتياطي التالي...")
+                time.sleep(5)
+                continue
+    raise Exception("استنفدت جميع مفاتيح الـ API المتاحة حصتها اليومية.")
 
 def parse_json_safely(raw_text):
-    # محاولة استخراج محتوى JSON من بين العلامات
     if "```json" in raw_text:
         raw_text = raw_text.split("```json")[1].split("```")[0].strip()
     elif "```" in raw_text:
@@ -55,22 +68,21 @@ def parse_json_safely(raw_text):
     try:
         return json.loads(raw_text)
     except Exception:
-        # حل بديل آمن في حال فشل تحليل الـ JSON المعقد
         return {
             "image_prompt": "Futuristic technology and artificial intelligence editorial illustration 8k",
             "ar": {
-                "title": "أحدث ابتكارات الذكاء الاصطناعي وتطبيقاته العملية",
-                "description": "دليلك الشامل لأحدث أدوات الذكاء الاصطناعي وتقنيات المستقبل الرقمية.",
+                "title": "أحدث ابتكارات الذكاء الاصطناعي وتقطياته المتطورة",
+                "description": "دليلك الشامل لأحدث أدوات وتقنيات الذكاء الاصطناعي الرقمية.",
                 "category": "ذكاء-اصطناعي",
-                "key_takeaways": ["متابعة أحدث أدوات التقنية", "تطبيق الذكاء الاصطناعي بكفاءة"],
-                "content": "نستعرض اليوم أحدث التطورات في عالم الذكاء الاصطناعي وكيفية الاستفادة منها في مشاريعك البرمجية والرقيمة لتحقيق أقصى إنتاجية."
+                "key_takeaways": ["متابعة أحدث الأدوات", "زيادة الإنتاجية برمجياً"],
+                "content": "نستعرض اليوم أحدث التطورات التقنية وكيفية توظيفها في مشاريعك البرمجية والرقمية."
             },
             "en": {
-                "title": "The Latest AI Innovations and Practical Applications",
-                "description": "A comprehensive guide to modern artificial intelligence tools.",
+                "title": "Latest Innovations in Artificial Intelligence",
+                "description": "A comprehensive guide to modern AI tools.",
                 "category": "AI-Engineering",
-                "key_takeaways": ["Explore new tech tools", "Boost your productivity with AI"],
-                "content": "Today we explore the latest breakthroughs in artificial intelligence and how to leverage them effectively in your workflow."
+                "key_takeaways": ["Explore new tools", "Boost your workflow"],
+                "content": "Today we explore the latest breakthroughs in AI and how to leverage them effectively."
             }
         }
 
@@ -87,7 +99,7 @@ prompt = f"""
 أحدث المستجدات اليوم: {live_news}
 تجنب تكرار هذه العناوين السابقة: {past_titles[-20:]}
 
-اختر موضوعاً تقنياً بارزاً واكتب عنه مقالاً احترافياً باللغتين العربية والإنجليزية بصيغة Markdown مع عناوين فرعية ## وأكواد برمجية إن أمكن.
+اختر موضوعاً تقنياً بارزاً واكتب عنه مقالاً احترافياً باللغتين العربية والإنجليزية بصيغة Markdown مع عناوين فرعية ## وأكواد برمجية.
 
 أجب بصيغة JSON صالح فقط وبدون أي إضافات بهذا الهيكل الدقيق:
 {{
@@ -109,8 +121,8 @@ prompt = f"""
 }}
 """
 
-print("جاري توليد المقال...")
-raw_resp = call_gemini(prompt)
+print("جاري توليد المقال باستخدام نظام المفاتيح المتعددة...")
+raw_resp = call_gemini_with_rotation(prompt)
 data = parse_json_safely(raw_resp)
 
 os.makedirs("_posts", exist_ok=True)
@@ -158,4 +170,4 @@ verified: true
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data.get('en', {}).get('title', 'Article') + "\n")
 
-print("تم نشر المقالات بنجاح تام!")
+print("تم نشر المقالات بنجاح تام عبر نظام المفاتيح الذكي!")
