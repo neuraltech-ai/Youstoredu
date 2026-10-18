@@ -11,8 +11,8 @@ import google.generativeai as genai
 # جلب عدة مفاتيح API إن وجدت للتبديل التلقائي عند نفاد الحصة
 api_keys = [
     os.environ.get("ANTHROPIC_API_KEY"),
-    os.environ.get("GEMINI_API_KEY_2"),
-    os.environ.get("GEMINI_API_KEY_3")
+    os.environ.get("GEMINI2"),
+    os.environ.get("GEMINI3")
 ]
 api_keys = [k for k in api_keys if k] # تنظيف المفاتيح الفارغة
 
