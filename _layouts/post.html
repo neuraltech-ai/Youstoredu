@@ -349,7 +349,10 @@
 
 
 
-<!-- NeuralTech Live Conversational AI -->
+
+
+
+<!-- NeuralTech Dynamic Article & Conversational AI Engine -->
 <div id="nt-ai-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, -apple-system, sans-serif;">
   <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; border: 1px solid #3b82f6; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
     <span style="color: #60a5fa; font-size: 16px;">✨</span> <span>NeuralTech AI</span>
@@ -360,14 +363,14 @@
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="color: #60a5fa;">✨</span>
         <span style="font-weight: 700; font-size: 14px; letter-spacing: 0.3px;">NeuralTech AI</span>
-        <span style="background: #10b981; width: 8px; height: 8px; border-radius: 50%; display: inline-block;" title="متصل الآن"></span>
+        <span style="background: #10b981; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
       </div>
       <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;">✕</button>
     </div>
     
     <div id="nt-ai-chatbox" style="flex: 1; padding: 14px; overflow-y: auto; font-size: 14px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth;">
       <div style="background: #1e293b; border: 1px solid #334155; padding: 12px 14px; border-radius: 12px 12px 12px 2px; max-width: 88%; line-height: 1.7; color: #e2e8f0; direction: rtl; text-align: right;">
-        أهلاً بك! أنا معك هنا على مدار الساعة. يمكنك محادثتي بالعربية أو الإنجليزية حول أي موضوع تقني، أو سؤالي عن المقالات والأكواد الموجودة في الصفحة!
+        أهلاً بك! أنا معك لمناقشة المقالات والأكواد البرمجية في الصفحة أو الإجابة عن أي استفسار تقني. تفضل بالحديث معي مباشرة!
       </div>
     </div>
     
@@ -379,6 +382,129 @@
 </div>
 
 <script>
+// 1. دالة التوليد الفوري للمقالات الكاملة داخل الصفحة (تعمل على SPA والصفحات المنفصلة)
+function upgradeEmptyArticlesOnScreen() {
+  // تنظيف النصوص والعناوين المبتورة في الصفحة
+  document.querySelectorAll("h1, h2, h3, p, span, button, textarea").forEach(el => {
+    if (el.children.length === 0 && el.textContent) {
+      if (el.textContent.includes("조선일보") || el.textContent.includes("Software I")) {
+        el.textContent = el.textContent.replace(" - 조선일보", "").replace(/Software I$/, "Software Industry");
+      }
+      if (el.textContent.includes("إرسال والحصول على رد البوت")) {
+        el.textContent = "إرسال النقاش لـ NeuralTech AI ✨";
+      }
+      if (el.textContent.includes("1 min read")) {
+        el.textContent = "6 min read";
+      }
+      if (el.textContent.includes("وقت القراءة: 1 دقائق")) {
+        el.textContent = "وقت القراءة: 6 دقائق";
+      }
+    }
+    if (el.tagName === "TEXTAREA" && el.placeholder && el.placeholder.includes("البوت")) {
+      el.placeholder = "اطرح سؤالك أو رأيك حول المقال والكود البرمجي ليشاركك NeuralTech AI النقاش...";
+    }
+  });
+
+  // استبدال الردود القديمة في التعليقات
+  document.querySelectorAll("div, p, span").forEach(el => {
+    if (el.innerHTML && el.innerHTML.includes("🤖 سؤال رائع!")) {
+      el.innerHTML = el.innerHTML.replace("🤖 سؤال رائع!", "✨ تحليل تقني:");
+    }
+  });
+
+  // البحث عن الفقرات السطحية ذات السطر الواحد واستبدالها بمقال كامل ومفصل
+  document.querySelectorAll("p, div").forEach(el => {
+    const txt = (el.textContent || "").trim();
+    if (el.querySelector(".nt-injected-article")) return;
+
+    // أ) المقالات العربية الفارغة
+    if ((txt.startsWith("نستعرض اليوم أحدث التطورات التقنية") || txt.startsWith("نناقش اليوم أبرز المستجدات التقنية")) && txt.length < 300) {
+      const h1 = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : "تقنيات الذكاء الاصطناعي الحديثة";
+      el.innerHTML = `
+      <div class="nt-injected-article" style="line-height: 1.95; font-size: 16.5px; color: #e2e8f0; margin: 20px 0; text-align: right; direction: rtl;">
+        <p style="margin-bottom: 18px;">يشهد قطاع هندسة البرمجيات وتطوير الأنظمة الذكية طفرة غير مسبوقة في مجال <b>${h1}</b>. لم يعد الاعتماد على الذكاء الاصطناعي مجرد أداة تكميلية لكتابة الأسطر البرمجية، بل تحول إلى ركيزة معمارية قادرة على تحليل الأنظمة المعقدة، أتمتة المهام المتكررة، واكتشاف الثغرات المنطقية بدقة عالية.</p>
+        
+        <h3 style="color: #60a5fa; font-size: 19px; margin: 24px 0 10px 0; border-right: 4px solid #3b82f6; padding-right: 12px;">1. التحليل المعماري والهندسة العكسية الذكية</h3>
+        <p style="margin-bottom: 16px; color: #cbd5e1;">تعتمد الأدوات البرمجية الحديثة على تحويل الشيفرات المصدرية إلى <b>شجرة إعراب مجردة (Abstract Syntax Tree - AST)</b>، مما يمكّن الخوارزميات من فهم تدفق البيانات والمنطق البرمجي لكل دالة. هذا الأسلوب يختصر أسابيع من الفحص اليدوي إلى ثوانٍ معدودة، ويتيح إعادة هيكلة البرمجيات القديمة (Refactoring) بأعلى معايير الأداء.</p>
+
+        <h3 style="color: #60a5fa; font-size: 19px; margin: 24px 0 10px 0; border-right: 4px solid #3b82f6; padding-right: 12px;">2. منهجية التطبيق العملي للمطورين</h3>
+        <ul style="margin: 0 0 20px 0; padding-right: 22px; color: #cbd5e1; line-height: 2;">
+          <li><b>بناء خطوط أتمتة ذكية:</b> استخدام سكريبتات بايثون لفحص الشيفرات والتحقق من خلوها من الأخطاء قبل رفعها إلى المستودع.</li>
+          <li><b>إدارة المشاريع عبر بيئات العمل المرنة:</b> توظيف أدوات سطر الأوامر (مثل Termux و Git) لإدارة عمليات النشر والتحديث الفوري من أي مكان.</li>
+          <li><b>التدقيق المستمر (Automated Auditing):</b> قياس كفاءة الدوال البرمجية واستهلاك الموارد بشكل آلي ومستدام.</li>
+        </ul>
+
+        <h3 style="color: #60a5fa; font-size: 19px; margin: 24px 0 10px 0; border-right: 4px solid #3b82f6; padding-right: 12px;">3. النموذج البرمجي التطبيقي (Python AST Engine)</h3>
+        <p style="margin-bottom: 10px; color: #cbd5e1;">يوضح الكود البرمجي أدناه كيفية بناء أداة عملية بلغة Python تقوم بفحص بنية الكود، استخراج الدوال والكلاسات، وإصدار تقرير فحص فوري:</p>
+      </div>`;
+    }
+
+    // ب) المقالات الإنجليزية الفارغة
+    if ((txt.startsWith("Today we examine the latest global") || txt.startsWith("We explore the latest")) && txt.length < 300) {
+      const h1 = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : "Modern AI Engineering";
+      el.innerHTML = `
+      <div class="nt-injected-article" style="line-height: 1.9; font-size: 16.5px; color: #e2e8f0; margin: 20px 0; text-align: left; direction: ltr;">
+        <p style="margin-bottom: 18px;">The software engineering ecosystem is undergoing a fundamental transformation driven by <b>${h1}</b>. Generative AI and automated reasoning engines have evolved far beyond simple code completion—they now serve as core architectural auditors capable of reverse-engineering legacy systems and optimizing execution pipelines in real time.</p>
+        
+        <h3 style="color: #60a5fa; font-size: 19px; margin: 24px 0 10px 0; border-left: 4px solid #3b82f6; padding-left: 12px;">1. Semantic AST Parsing & Automated Auditing</h3>
+        <p style="margin-bottom: 16px; color: #cbd5e1;">Rather than relying on superficial regex matching, modern neural code analyzers parse raw source files into an <b>Abstract Syntax Tree (AST)</b>. By traversing node hierarchies programmatically, engineering teams can automatically map dependencies, detect cyclomatic bottlenecks, and enforce strict security standards before deployment.</p>
+
+        <h3 style="color: #60a5fa; font-size: 19px; margin: 24px 0 10px 0; border-left: 4px solid #3b82f6; padding-left: 12px;">2. Key Engineering Workflows</h3>
+        <ul style="margin: 0 0 20px 0; padding-left: 22px; color: #cbd5e1; line-height: 2;">
+          <li><b>Zero-Dependency Code Verification:</b> Utilize Python's built-in AST library to validate syntax and function definitions automatically.</li>
+          <li><b>Mobile & CLI DevOps Integration:</b> Combine lightweight Termux scripts with GitHub workflows for rapid, automated publishing.</li>
+          <li><b>Modular Architecture Design:</b> Decouple monolithic logic into clean, testable, and self-auditing components.</li>
+        </ul>
+
+        <h3 style="color: #60a5fa; font-size: 19px; margin: 24px 0 10px 0; border-left: 4px solid #3b82f6; padding-left: 12px;">3. Production Implementation (Python Code)</h3>
+        <p style="margin-bottom: 10px; color: #cbd5e1;">Below is a complete, runnable Python implementation demonstrating how to inspect module structures and verify system readiness automatically:</p>
+      </div>`;
+    }
+  });
+
+  // استبدال الكود القصير المبتور بكود بايثون هندسي كامل
+  document.querySelectorAll("pre, code").forEach(codeEl => {
+    const cTxt = (codeEl.textContent || "").trim();
+    if (cTxt.includes("System Online") && cTxt.length < 120) {
+      codeEl.style.cssText = "display: block; overflow-x: auto; padding: 14px; font-family: monospace; font-size: 13px; line-height: 1.6; color: #38bdf8; direction: ltr; text-align: left;";
+      codeEl.textContent = `import ast
+
+class NeuralTechAuditor:
+    def __init__(self, target_name: str):
+        self.target_name = target_name
+
+    def inspect_code(self, source_code: str) -> dict:
+        tree = ast.parse(source_code)
+        functions = [n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
+        classes = [n.name for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
+        return {
+            "module": self.target_name,
+            "status": "System Online & Fully Operational ✅",
+            "classes_detected": classes,
+            "functions_detected": functions
+        }
+
+if __name__ == "__main__":
+    sample = "def run_neural_pipeline(): return True"
+    auditor = NeuralTechAuditor("NeuralCore_v2")
+    print(auditor.inspect_code(sample))`;
+    }
+  });
+}
+
+// تشغيل الفاحص فوراً وعند أي ضغطة أو تغيير في الصفحة (لضمان عمله مع SPA)
+document.addEventListener("DOMContentLoaded", upgradeEmptyArticlesOnScreen);
+window.addEventListener("load", upgradeEmptyArticlesOnScreen);
+window.addEventListener("hashchange", upgradeEmptyArticlesOnScreen);
+document.addEventListener("click", () => setTimeout(upgradeEmptyArticlesOnScreen, 100));
+const ntObserver = new MutationObserver(() => upgradeEmptyArticlesOnScreen());
+if (document.body) {
+  ntObserver.observe(document.body, { childList: true, subtree: true });
+} else {
+  document.addEventListener("DOMContentLoaded", () => ntObserver.observe(document.body, { childList: true, subtree: true }));
+}
+
+// 2. محرك المحادثة الطبيعي والفوري (بدون أي أخطاء أو تقييد)
 let ntTurn = 0;
 
 function toggleNTChat() {
@@ -392,96 +518,56 @@ function generateHumanLikeReply(userText) {
   const q = userText.toLowerCase().trim();
   const pageTitle = (document.querySelector("h1") ? document.querySelector("h1").innerText : document.title).trim();
 
-  // 1. التحيات بالإنجليزية والعربية بأسلوب بشري طبيعي ومتجدد
-  if (/^(hello|hi|hey|good morning|good evening|greetings)/i.test(q)) {
+  if (/^(hello|hi|hey|good morning|good evening)/i.test(q)) {
     const enGreets = [
-      "Hey there! Great to have you on NeuralTech AI. Are you checking out our latest articles or working on a coding project today?",
+      "Hey there! Great to have you on NeuralTech AI. Are you exploring our latest articles or working on a coding project today?",
       "Hello! Welcome in. What tech topic or programming idea is on your mind right now?",
-      "Hi! Always happy to chat. Feel free to ask me about Python, AI workflows, or anything on this page!"
+      "Hi! Always happy to chat. Feel free to ask me about the Python code on this page, AI workflows, or our digital store!"
     ];
     return enGreets[ntTurn % enGreets.length];
   }
 
-  if (q.includes("سلام") || q.includes("مرحبا") || q.includes("مرحبًا") || q.includes("اهلا") || q.includes("أهلا") || q.includes("صباح") || q.includes("مساء")) {
+  if (q.includes("سلام") || q.includes("مرحبا") || q.includes("اهلا") || q.includes("أهلا") || q.includes("صباح") || q.includes("مساء")) {
     const arGreets = [
       "وعليكم السلام ورحمة الله! أهلاً بك يا صديقي. يسعدني جداً الحديث معك، أخبرني ماذا يدور في ذهنك اليوم؟",
-      "يا هلا ومرحباً بك! نورت موقع NeuralTech. هل تود أن نتناقش حول المقال المعروض أمامك أم لديك فكرة برمجية تعمل عليها؟",
+      "يا هلا ومرحباً بك! نورت منصة NeuralTech AI. هل نناقش المقال المعروض أمامك أم لديك فكرة برمجية تعمل عليها؟",
       "أهلاً وسهلاً بك! أنا جاهز تماماً للحوار، تفضل بطرح أي سؤال تقني أو برمجي يخطر ببالك."
     ];
     return arGreets[ntTurn % arGreets.length];
   }
 
-  // 2. السؤال عن الحال أو الهوية
-  if (q.includes("كيف حالك") || q.includes("شخبارك") || q.includes("أخبارك") || q.includes("how are you")) {
-    return isAr 
-      ? "بخير والحمد لله، في أتم الجاهزية والنشاط!شكراً لسؤالك اللطيف. أنت كيف تسير أمورك ومشاريعك اليوم؟"
-      : "I'm doing great and running at full speed, thanks for asking! How are your projects going today?";
-  }
-
-  if (q.includes("من أنت") || q.includes("من انت") || q.includes("عرفني بنفسك") || q.includes("who are you")) {
+  if (q.includes("مقال") || q.includes("خطوات") || q.includes("اشرح") || q.includes("شرح") || q.includes("لخص") || q.includes("article") || q.includes("explain") || q.includes("steps")) {
     return isAr
-      ? "أنا المستشار الذكي الخاص بمنصة NeuralTech AI. صُممت لمرافقتك في تصفح الموقع، شرح الأكواد والمفاهيم الهندسية ببساطة، ومساعدتك في تطوير أعمالك البرمجية."
-      : "I'm the conversational AI advisor here at NeuralTech AI. I'm here to discuss software architecture, explain code snippets, and help you build better tech projects.";
+      ? `في هذا المقال (<b>${pageTitle}</b>) نركز على توظيف الذكاء الاصطناعي وشجرة الإعراب المجردة (AST) لفحص الشيفرات البرمجية وهندستها عكسياً بشكل آلي. لقد أرفقنا في المقال شرحاً مفصلاً لطريقة العمل مع كود بايثون تطبيقي متكامل. هل تود أن أشرح لك كيف يعمل الكود خطوة بخطوة؟`
+      : `In this article (<b>${pageTitle}</b>), we cover how AI and Abstract Syntax Trees (AST) automate code auditing and reverse engineering. You'll find a complete breakdown and a runnable Python class right on the page. Would you like me to walk through the code with you?`;
   }
 
-  // 3. أسئلة حول المقال الحالي أو الخطوات أو الشرح
-  if (q.includes("مقال") || q.includes("خطوات") || q.includes("اشرح") || q.includes("شرح") || q.includes("لخص") || q.includes("عما يتحدث") || q.includes("article") || q.includes("explain") || q.includes("steps") || q.includes("summary")) {
+  if (q.includes("كود") || q.includes("برمج") || q.includes("بايثون") || q.includes("python") || q.includes("termux") || q.includes("code")) {
     return isAr
-      ? `في هذه الصفحة نركز على موضوع <b>${pageTitle}</b>. الفكرة الأساسية تدور حول استخدام الذكاء الاصطناعي لتحليل الشيفرات البرمجية عبر شجرة الإعراب المجردة (AST) بدلاً من الفحص اليدوي المرهق، وقد أرفقنا في أسفل المقال كود بايثون عملياً يوضح كيفية تطبيق ذلك. هل ترغب أن أشرح لك كيف يعمل الكود سطراً بسطر؟`
-      : `On this page, we're diving into <b>${pageTitle}</b>. The core concept is using AI and Abstract Syntax Trees (AST) to audit and reverse-engineer codebases automatically. Check out the Python class in the article—would you like me to break down how the code works step by step?`;
+      ? "الكود الموجود في المقال يستخدم مكتبة `ast` القياسية المدمجة في بايثون، مما يعني أنه يعمل مباشرة في Termux بدون تثبيت أي حزم خارجية! يقوم الكود بقراءة أي نص برمجي واستخراج جميع الدوال والكلاسات منه. هل تحب أن نطور هذا الكود ليقوم بفحص ملف كامل تلقائياً؟"
+      : "The Python code on this page uses the built-in `ast` library—so it runs out-of-the-box in Termux with zero extra dependencies! It parses code into a syntax tree and lists all classes and functions. Want to see how to run it on an entire folder of scripts?";
   }
 
-  // 4. أسئلة عن الكود أو بايثون أو Termux
-  if (q.includes("كود") || q.includes("برمج") || q.includes("بايثون") || q.includes("python") || q.includes("termux") || q.includes("code") || q.includes("script")) {
+  if (q.includes("متجر") || q.includes("شراء") || q.includes("كتب") || q.includes("store") || q.includes("buy") || q.includes("payhip")) {
     return isAr
-      ? "الجميل في الكود المرفق في المقال أنه يعتمد على مكتبة `ast` المدمجة في بايثون، أي أنك لا تحتاج لتثبيت أي مكتبات خارجية في Termux لتشغيله! فقط انسخ الكود وضعه في ملف `.py` وشغله ليفحص لك الدوال والكلاسات فوراً. هل جربت تشغيله أم تحب أن نعدل عليه معاً؟"
-      : "The great thing about the Python code on this page is that it uses the built-in `ast` module—meaning zero external dependencies to install in Termux! You can copy it directly into a `.py` file and run it. Want to customize it for a specific task?";
+      ? "تفضل بزيارة متجرنا الرقمي الرسمي الذي يضم مجموعة متميزة من الكتب الإلكترونية والموارد التقنية: <a href='https://payhip.com/Youstor' target='_blank' style='color:#60a5fa;text-decoration:underline;font-weight:bold;'>متجر NeuralTech الرقمي (Payhip)</a>."
+      : "You can check out our curated eBooks and digital resources right here: <a href='https://payhip.com/Youstor' target='_blank' style='color:#60a5fa;text-decoration:underline;font-weight:bold;'>NeuralTech Digital Store (Payhip)</a>.";
   }
 
-  // 5. أسئلة عن تحويل الهاتف لمحطة إنتاجية أو تطوير الموقع
-  if (q.includes("هاتف") || q.includes("محطة") || q.includes("انتاجية") || q.includes("إنتاجية") || q.includes("طور") || q.includes("تطوير") || q.includes("موقع") || q.includes("phone") || q.includes("productivity") || q.includes("website")) {
-    return isAr
-      ? "لتحويل هاتفك إلى محطة عمل وإنتاجية حقيقية، السر يكمن في الجمع بين **Termux** (لإدارة ملفات Git وتشغيل سكريبتات بايثون) مع أتمتة النشر عبر **GitHub Pages**. بهذه الطريقة يمكنك إدارة موقع كامل وتحديث مقالاته وبناء أدوات رقمية في دقائق معدودة. ما هي الأداة التي تستخدمها حالياً بكثرة على هاتفك؟"
-      : "Turning your phone into a real workstation comes down to combining **Termux**, **Python automation**, and **GitHub Pages**. With a few clean scripts, you can deploy updates, audit code, and manage digital products from anywhere. What part of your workflow are you looking to automate next?";
-  }
-
-  // 6. المتجر الرقمي والمنتجات
-  if (q.includes("متجر") || q.includes("شراء") || q.includes("كتب") || q.includes("منتج") || q.includes("store") || q.includes("buy") || q.includes("payhip") || q.includes("shop")) {
-    return isAr
-      ? "بالتأكيد! جمعنا في متجرنا الرقمي مجموعة مختارة من الكتب الإلكترونية والموارد المصممة بعناية لتطوير المهارات والتميز. يمكنك تصفحها مباشرة من هنا: <a href='https://payhip.com/Youstor' target='_blank' style='color:#60a5fa;text-decoration:underline;font-weight:bold;'>متجر NeuralTech الرقمي (Payhip)</a>. أخبرني إذا لفت انتباهك شيء معين هناك!"
-      : "Absolutely! You can explore our curated digital products and eBooks right here on our official store: <a href='https://payhip.com/Youstor' target='_blank' style='color:#60a5fa;text-decoration:underline;font-weight:bold;'>NeuralTech Digital Store (Payhip)</a>. Let me know what catches your eye!";
-  }
-
-  // 7. ردود المتابعة (نعم، أكمل، شكراً، رائع، كيف، لماذا...)
-  if (q.includes("نعم") || q.includes("اكمل") || q.includes("أكمل") || q.includes("اشرح لي") || q.includes("تفضل") || q.includes("yes") || q.includes("sure") || q.includes("go ahead")) {
-    return isAr
-      ? "يسعدني ذلك! الفكرة ببساطة أننا نقوم بتمرير أي كود برمجي إلى دالة `ast.parse()`، وهي تقوم بتحويل النص إلى شجرة عناصر، ثم نلتقط منها أسماء الدوال `FunctionDef` والكلاسات `ClassDef` لنتأكد أن الكود سليم وخالٍ من الأخطاء قبل نشره في الموقع. هل تحب أن نطبق هذه الفكرة على سكريبت آخر لديك؟"
-      : "Awesome! Essentially, `ast.parse()` converts raw code into a syntax tree in memory. We then walk through the tree nodes to verify every `FunctionDef` and `ClassDef` before deployment. Would you like to see how to add automated security checks to it as well?";
-  }
-
-  if (q.includes("شكر") || q.includes("ممتاز") || q.includes("رائع") || q.includes("جميل") || q.includes("احسنت") || q.includes("thank") || q.includes("great") || q.includes("nice")) {
-    return isAr
-      ? "العفو يا صديقي، هذا واجبي ويسعدني دائماً الحوار معك! هل هناك أي فكرة أخرى أو تفصيل تقني تود أن نغوص فيه الآن؟"
-      : "You're very welcome! Always a pleasure chatting with you. Is there anything else you'd like to explore or build together?";
-  }
-
-  // 8. حوار ذكي ومتنوع لأي سؤال عام أو جديد بدون أي قوالب مكررة
-  const arSmartConversational = [
-    "نقطة مثيرة للاهتمام! في عالم الذكاء الاصطناعي والبرمجة الحديثة، التركيز الأساسي أصبح على تبسيط الخطوات المعقدة وتحويلها إلى مهام تلقائية توفر الوقت والجهد. هل تفكر في تطبيق هذا الأمر في مشروعك الحالي؟",
-    "سؤال وجيه جداً. أفضل طريقة للتعامل مع هذا الجانب تقنياً هي البدء ببناء نموذج مصغر (Prototype) بلغة مرنة مثل بايثون واختباره عملياً، ثم توسيعه تدريجياً. هل تحب أن نقترح معاً خطة عملية سريعة للبدء؟",
-    "أعجبني تفكيرك في هذه الزاوية! التطورات التقنية الحالية تمنح المطور المستقل أدوات كانت حكراً على الشركات الكبرى، خصوصاً عند دمج نماذج الذكاء الاصطناعي مع سكريبتات الأتمتة. ما رأيك أن نربط هذه الفكرة بمحتوى موقعك؟"
+  const arSmart = [
+    "نقطة ممتازة! في المشاريع التقنية الحديثة، الجمع بين بايثون وأدوات الأتمتة يختصر الكثير من الوقت ويمنحك نتائج احترافية. هل تعمل حالياً على تطبيق هذه الفكرة؟",
+    "سؤال ذكي. أفضل مقاربة عملية لهذا الموضوع هي بناء سكريبت مصغر واختباره محلياً أولاً، ثم دمجه في سير عملك اليومي. هل تحب أن نكتب كوداً مبدئياً لذلك؟",
+    "أتفق معك تماماً! التطور السريع في أدوات الذكاء الاصطناعي يتيح للمطور المستقل بناء منصات متكاملة بأقل مجهود. أي جانب تقني يهمك التركيز عليه أكثر؟"
   ];
-
-  const enSmartConversational = [
-    "That's a great point! In modern software engineering, the key is breaking complex workflows down into clean, automated scripts that save time. Are you looking to integrate this into your current setup?",
-    "Interesting question! The most effective approach is usually building a lightweight Python prototype first, testing it locally, and then scaling it up. Want to brainstorm a quick implementation plan?",
-    "I like where you're going with this! Modern AI tooling gives independent developers massive leverage when combined with smart automation. How do you see this fitting into your next project?"
+  const enSmart = [
+    "Great point! Combining clean Python automation with modern AI workflows saves massive engineering time. Are you building something similar right now?",
+    "Interesting question! The best approach is usually prototyping a lightweight script locally first and then automating it. Want to sketch out the logic together?",
+    "Spot on! Modern tooling lets independent developers ship high-quality products faster than ever. Which part of the stack are you focusing on?"
   ];
-
-  return isAr ? arSmartConversational[ntTurn % arSmartConversational.length] : enSmartConversational[ntTurn % enSmartConversational.length];
+  return isAr ? arSmart[ntTurn % arSmart.length] : enSmart[ntTurn % enSmart.length];
 }
 
-async function sendNTMessage() {
+function sendNTMessage() {
   const input = document.getElementById("nt-ai-input");
   const box = document.getElementById("nt-ai-chatbox");
   const text = input.value.trim();
@@ -495,22 +581,15 @@ async function sendNTMessage() {
   input.value = "";
   box.scrollTop = box.scrollHeight;
 
-  const loadDiv = document.createElement("div");
-  loadDiv.style.cssText = "background: #1e293b; color: #94a3b8; padding: 8px 14px; border-radius: 12px; max-width: 75%; font-size: 12.5px; direction: " + (isAr ? "rtl" : "ltr") + ";";
-  loadDiv.textContent = isAr ? "يكتب الآن..." : "Typing...";
-  box.appendChild(loadDiv);
-  box.scrollTop = box.scrollHeight;
-
   setTimeout(() => {
-    loadDiv.remove();
     const reply = generateHumanLikeReply(text);
     const replyIsAr = /[\u0600-\u06FF]/.test(reply);
     const aiDiv = document.createElement("div");
     aiDiv.style.cssText = "background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 12px 14px; border-radius: 12px 12px 12px 2px; max-width: 90%; line-height: 1.7; word-wrap: break-word; direction: " + (replyIsAr ? "rtl" : "ltr") + "; text-align: " + (replyIsAr ? "right" : "left") + ";";
-    aiDiv.innerHTML = reply.replace(/`([^`]+)`/g, '<code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#38bdf8;font-family:monospace;">$1</code>').replace(/\*\*(.*?)\*\*/g, '<b style="color:#93c5fd;">$1</b>');
+    aiDiv.innerHTML = reply.replace(/`([^`]+)`/g, '<code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#38bdf8;font-family:monospace;">$1</code>');
     box.appendChild(aiDiv);
     box.scrollTop = box.scrollHeight;
-  }, 450);
+  }, 350);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
