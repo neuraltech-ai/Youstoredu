@@ -87,27 +87,27 @@ if __name__ == "__main__":
     </div>
 </div>
 
-<!-- زر المساعد الذكي السفلي الموحد بدون تداخل -->
+<!-- زر المساعد الذكي السفلي الأنيق والمصغر -->
 <div id="nt-ai-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
-  <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; border: 1px solid #3b82f6; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 8px;">
+  <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 13.5px; cursor: pointer; box-shadow: 0 6px 20px rgba(37,99,235,0.4); display: flex; align-items: center; gap: 7px;">
     <span>✨</span> <span>NeuralTech AI</span>
   </button>
   
-  <div id="nt-ai-window" style="display: none; position: absolute; bottom: 58px; right: 0; width: 345px; max-width: 92vw; height: 440px; background: #0f172a; color: #f8fafc; border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.65); flex-direction: column; overflow: hidden; border: 1px solid #334155;">
-    <div style="background: #1e293b; padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-      <span style="font-weight: 700; font-size: 14px;">✨ NeuralTech AI</span>
-      <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;">✕</button>
+  <div id="nt-ai-window" style="display: none; position: absolute; bottom: 55px; right: 0; width: 330px; max-width: 90vw; height: 420px; background: #0f172a; color: #f8fafc; border-radius: 14px; box-shadow: 0 12px 32px rgba(0,0,0,0.65); flex-direction: column; overflow: hidden; border: 1px solid #334155; direction: rtl;">
+    <div style="background: #1e293b; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
+      <span style="font-weight: 700; font-size: 13.5px; color: #60a5fa;">✨ NeuralTech AI</span>
+      <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 15px;">✕</button>
     </div>
     
-    <div id="nt-ai-chatbox" style="flex: 1; padding: 14px; overflow-y: auto; font-size: 13.5px; display: flex; flex-direction: column; gap: 10px;">
-      <div style="background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 10px; max-width: 85%; line-height: 1.6; direction: rtl; text-align: right;">
+    <div id="nt-ai-chatbox" style="flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="background: #1e293b; border: 1px solid #334155; padding: 10px 12px; border-radius: 10px; max-width: 88%; line-height: 1.6; text-align: right;">
         أهلاً بك! أنا معك هنا لمناقشة الأكواد والمقالات وطرح الأفكار التقنية. تفضل بطرح سؤالك!
       </div>
     </div>
     
-    <div style="padding: 10px; background: #1e293b; display: flex; gap: 8px; border-top: 1px solid #334155;">
-      <input type="text" id="nt-ai-input" placeholder="اكتب سؤالك هنا..." style="flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 8px; font-size: 13px; outline: none; direction: rtl;">
-      <button onclick="sendMsg()" style="background: #2563eb; color: white; border: none; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold;">إرسال</button>
+    <div style="padding: 8px 10px; background: #1e293b; display: flex; gap: 6px; border-top: 1px solid #334155;">
+      <input type="text" id="nt-ai-input" placeholder="اكتب سؤالك هنا..." style="flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; outline: none; text-align: right;">
+      <button onclick="sendMsg()" style="background: #2563eb; color: white; border: none; padding: 0 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12.5px;">إرسال</button>
     </div>
   </div>
 </div>
@@ -124,12 +124,12 @@ function sendMsg() {
   const txt = inp.value.trim();
   if(!txt) return;
 
-  box.innerHTML += `<div style="background: #2563eb; color: #fff; padding: 8px 12px; border-radius: 10px; max-width: 80%; align-self: flex-end;">${txt}</div>`;
+  box.innerHTML += `<div style="background: #2563eb; color: #fff; padding: 8px 12px; border-radius: 10px; max-width: 80%; align-self: flex-end; text-align: right;">${txt}</div>`;
   inp.value = "";
   box.scrollTop = box.scrollHeight;
 
   setTimeout(() => {
-    box.innerHTML += `<div style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 10px; max-width: 85%; direction: rtl; text-align: right;">أشكرك على طرحك! الكود والتحليل المعماري في المقال جاهزان للتطبيق الفوري في بيئة Termux وبايثون. هل تحب أن نطور هذا السكريبت معاً؟</div>`;
+    box.innerHTML += `<div style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 10px; max-width: 85%; text-align: right;">أشكرك على طرحك! الكود والتحليل المعماري في المقال جاهزان للتطبيق الفوري. هل تحب أن نطور هذا السكريبت معاً؟</div>`;
     box.scrollTop = box.scrollHeight;
   }, 400);
 }
