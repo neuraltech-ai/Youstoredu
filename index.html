@@ -148,16 +148,19 @@
         }
     </script>
 
+
+
+
 <!-- NeuralTech AI Chat Widget -->
-<div id="ai-chat-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; font-family: system-ui, sans-serif;">
+<div id="ai-chat-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
   <button id="ai-chat-btn" onclick="toggleChat()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;">
     💬 AI Assistant / المساعد الذكي
   </button>
   
-  <div id="ai-chat-box" style="display: none; width: 320px; height: 420px; background: #1e293b; color: #f8fafc; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); flex-direction: column; overflow: hidden; border: 1px solid #334155; margin-bottom: 10px;">
+  <div id="ai-chat-box" style="display: none; position: absolute; bottom: 60px; right: 0; width: 320px; height: 380px; background: #1e293b; color: #f8fafc; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); flex-direction: column; overflow: hidden; border: 1px solid #334155;">
     <div style="background: #0f172a; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-      <span style="font-weight: bold; font-size: 14px;">⚡ NeuralTech Bilingual AI</span>
-      <button onclick="toggleChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;">✕</button>
+      <span style="font-weight: bold; font-size: 14px;">⚡ NeuralTech Assistant</span>
+      <button onclick="toggleChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
     </div>
     <div id="ai-chat-messages" style="flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
       <div style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%;">
@@ -165,7 +168,7 @@
       </div>
     </div>
     <div style="padding: 10px; background: #0f172a; display: flex; gap: 6px; border-top: 1px solid #334155;">
-      <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك / Type your question..." style="flex: 1; background: #1e293b; border: 1px solid #475569; color: white; padding: 8px; border-radius: 6px; font-size: 13px; outline: none;">
+      <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك / Type here..." style="flex: 1; background: #1e293b; border: 1px solid #475569; color: white; padding: 8px; border-radius: 6px; font-size: 13px; outline: none;">
       <button onclick="sendChatMessage()" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">إرسال</button>
     </div>
   </div>
@@ -183,28 +186,26 @@ function sendChatMessage() {
   const text = input.value.trim();
   if(!text) return;
 
-  // إظهار رسالة المستخدم
   messages.innerHTML += '<div style="background: #2563eb; padding: 8px 12px; border-radius: 8px; max-width: 85%; align-self: flex-end;">' + text + '</div>';
   input.value = "";
   messages.scrollTop = messages.scrollHeight;
 
-  // تحليل اللغة وإنتاج الرد المناسب
   setTimeout(function() {
-    let isArabic = /[؀-ۿ]/.test(text);
+    let isArabic = /[\u0600-\u06FF]/.test(text);
     let reply = "";
-
     let lowerText = text.toLowerCase();
+
     if(lowerText.includes("store") || lowerText.includes("shop") || lowerText.includes("buy") || lowerText.includes("متجر") || lowerText.includes("شراء") || lowerText.includes("payhip")) {
       if(isArabic) {
-        reply = "يمكنك زيارة متجرنا الرقمي للاطلاع على أحدث المنتجات والإلكترونيات عبر الرابط: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
+        reply = "يمكنك زيارة متجرنا الرقمي عبر الرابط: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
       } else {
-        reply = "You can visit our digital store to check out our latest products via: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
+        reply = "You can visit our digital store via: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
       }
     } else {
       if(isArabic) {
-        reply = "شكراً لتواصلك! يمكنك استكشاف أحدث المقالات التقنية وأكواد الذكاء الاصطناعي المدققة في المدونة بانتظام.";
+        reply = "شكراً لتواصلك! يمكنك استكشاف المقالات والأكواد التقنية المدققة في المدونة.";
       } else {
-        reply = "Thanks for reaching out! You can explore our latest audited tech articles and AI code snippets on the blog.";
+        reply = "Thanks! You can explore our latest audited tech articles and code snippets.";
       }
     }
 
