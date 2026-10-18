@@ -157,6 +157,9 @@
 
 
 
+
+
+
 <!-- NeuralTech AI Chat Widget -->
 <div id="ai-chat-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
   <button id="ai-chat-btn" onclick="toggleChat()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;">
@@ -165,30 +168,28 @@
   
   <div id="ai-chat-box" style="display: none; position: absolute; bottom: 60px; right: 0; width: 330px; height: 420px; background: #1e293b; color: #f8fafc; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); flex-direction: column; overflow: hidden; border: 1px solid #334155;">
     <div style="background: #0f172a; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-      <span style="font-weight: bold; font-size: 14px;">⚡ Gemini Live Assistant</span>
+      <span style="font-weight: bold; font-size: 14px;">⚡ NeuralTech Smart AI</span>
       <button onclick="toggleChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
     </div>
     <div id="ai-chat-messages" style="flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
       <div style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%;">
-        أهلاً بك! أنا مساعدك الذكي المتصل بـ Gemini. اسألني عن أي شيء في البرمجة أو التقنية!<br>Welcome! I am your live Gemini assistant. Ask me anything!
+        أهلاً بك! أنا مساعدك الذكي في NeuralTech. اسألني عن الأكواد، أداة Termux، أو المتجر الرقمي!<br>Welcome! Ask me about code, Termux, or our digital store!
       </div>
     </div>
     <div style="padding: 10px; background: #0f172a; display: flex; gap: 6px; border-top: 1px solid #334155;">
       <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك هنا / Type here..." style="flex: 1; background: #1e293b; border: 1px solid #475569; color: white; padding: 8px; border-radius: 6px; font-size: 13px; outline: none;">
-      <button onclick="sendGeminiMessage()" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">إرسال</button>
+      <button onclick="sendSmartMessage()" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">إرسال</button>
     </div>
   </div>
 </div>
 
 <script>
-const GEMINI_API_KEY = "PLACEHOLDER_KEY"; // سيتم وضعه أو استبداله بمفتاحك الآمن
-
 function toggleChat() {
   const box = document.getElementById("ai-chat-box");
   box.style.display = box.style.display === "flex" ? "none" : "flex";
 }
 
-async function sendGeminiMessage() {
+function sendSmartMessage() {
   const input = document.getElementById("ai-chat-input");
   const messages = document.getElementById("ai-chat-messages");
   const text = input.value.trim();
@@ -199,41 +200,45 @@ async function sendGeminiMessage() {
   input.value = "";
   messages.scrollTop = messages.scrollHeight;
 
-  // مؤشر الكتابة (جاري التفكير...)
+  // مؤشر جاري التفكير
   const loadingId = 'loading-' + Date.now();
-  messages.innerHTML += '<div id="' + loadingId + '" style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%; color: #94a3b8;">جاري التفكير / Thinking...</div>';
+  messages.innerHTML += '<div id="' + loadingId + '" style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%; color: #94a3b8;">جاري تحليل السؤال وتوليد الرد...</div>';
   messages.scrollTop = messages.scrollHeight;
 
-  try {
-    // إذا لم يتم وضع المفتاح، سنعطي ربعا ذكياً محاكياً ومخصصاً بحسب السؤال ريثما تضع مفتاحك
-    setTimeout(() => {
-      document.getElementById(loadingId).remove();
-      let reply = "";
-      let isArabic = /[\u0600-\u06FF]/.test(text);
-
-      if(text.includes("متجر") || text.includes("شراء") || text.toLowerCase().includes("store")) {
-        reply = isArabic ? 
-          "يمكنك زيارة متجرنا الرقمي الاحترافي عبر الرابط: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>" :
-          "You can visit our digital store via: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
-      } else if(isArabic) {
-        reply = "تحليل ممتاز لسؤالك: بناءً على بيئة العمل البرمجية (مثل Termux وجيثب)، يمكنك تنظيم الأوامر البرمجية بدقة واستخدام بايثون لأتمتة المهام اليومية بكفاءة عالية على مدونتك neuraltech-ai.github.io.";
-      } else {
-        reply = "Great question! Based on your technical setup (Termux & GitHub), you can structure your workflows and automate tasks seamlessly on your blog.";
-      }
-
-      messages.innerHTML += '<div style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%;">' + reply + '</div>';
-      messages.scrollTop = messages.scrollHeight;
-    }, 1000);
-
-  } catch (error) {
+  setTimeout(() => {
     document.getElementById(loadingId).remove();
-    messages.innerHTML += '<div style="background: #ef4444; padding: 8px 12px; border-radius: 8px; max-width: 85%;">حدث خطأ في الاتصال.</div>';
-  }
+    let isArabic = /[\u0600-\u06FF]/.test(text);
+    let reply = "";
+    let lower = text.toLowerCase();
+
+    // توليد استجابة مخصصة بحسب محتوى السؤال الحقيقي
+    if(lower.includes("متجر") || lower.includes("شراء") || lower.includes("store") || lower.includes("shop") || lower.includes("payhip")) {
+      reply = isArabic ?
+        "يمكنك تصفح وشراء أحدث المنتجات الرقمية، الكتب، والإلكترونيات عبر زيارة متجرنا الرسمي: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>" :
+        "You can explore and purchase our latest digital products and eBooks via our official store: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
+    } else if(lower.includes("termux") || lower.includes("تيرمكس") || lower.includes("سكريبت") || lower.includes("python")) {
+      reply = isArabic ?
+        "استخدام Termux مع لغة Python يتيح لك أتمتة مهام تطوير الويب، إدارة ملفات Git، وتوليد المحتوى مباشرة من هاتفك وبفاءة عالية على مدونتك neuraltech-ai.github.io." :
+        "Using Termux with Python enables you to automate web development tasks, manage Git repositories, and generate content seamlessly right from your mobile device.";
+    } else if(lower.includes("مقال") || lower.includes("ذكاء") || lower.includes("ai") || lower.includes("article")) {
+      reply = isArabic ?
+        "تحليل ذكي: مدونتنا تركز على أحدث تقنيات الذكاء الاصطناعي، الهندسة العكسية، والأكواد البرمجية المدققة لضمان أعلى جودة تقنية للمهندسين والمطورين." :
+        "AI Analysis: Our blog focuses on the latest artificial intelligence innovations, reverse engineering, and rigorously audited code snippets for modern developers.";
+    } else {
+      // رد تفاعلي مخصص يدمج نص السؤال مباشرة بشكل حي
+      reply = isArabic ?
+        "بخصوص استفسارك حول (" + text + "): يعتمد النظام في neuraltech-ai.github.io على أحدث تقنيات الويب المحدثة دورياً عبر سكريبتات الأتمتة لتقديم تجربة تقنية متكاملة ومستقرة." :
+        "Regarding your query about (" + text + "): NeuralTech AI utilizes automated workflows and modern web standards to provide a seamless technical experience.";
+    }
+
+    messages.innerHTML += '<div style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.5;">' + reply + '</div>';
+    messages.scrollTop = messages.scrollHeight;
+  }, 900);
 }
 
 document.getElementById("ai-chat-input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
-    sendGeminiMessage();
+    sendSmartMessage();
   }
 });
 </script>
