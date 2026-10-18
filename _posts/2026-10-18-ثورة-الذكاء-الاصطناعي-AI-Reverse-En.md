@@ -2,10 +2,10 @@
 layout: post
 title: "ثورة الذكاء الاصطناعي: AI Reverse Engineering Shakes Software I"
 description: "تحليل لأحدث المستجدات التقنية وأدوات البرمجة الحديثة."
-date: 2026-10-18 02:05:04 +0000
+date: 2026-10-18 02:14:31 +0000
 categories: [تقنية]
 lang: ar
-image: "https://image.pollinations.ai/prompt/Futuristic%20technology%20and%20artificial%20intelligence%20editorial%20illustration%208k?width=1000&height=520&nologo=true&seed=9104"
+image: "https://image.pollinations.ai/prompt/Futuristic%20technology%20and%20artificial%20intelligence%20editorial%20illustration%208k?width=1000&height=520&nologo=true&seed=9671"
 verified: true
 ---
 
