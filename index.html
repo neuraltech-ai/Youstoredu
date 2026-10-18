@@ -5,21 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مدونة التقنية والذكاء الاصطناعي</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f4f4f9; color: #333; margin: 0; padding: 20px; direction: rtl; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; }
-        p { text-align: center; color: #7f8c8d; }
-        .welcome { background: #e8f4fd; padding: 15px; border-radius: 5px; border-right: 5px solid #3498db; margin-bottom: 20px; }
+        :root { --primary: #2563eb; --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b; --text-light: #64748b; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        header { background: var(--card-bg); border-bottom: 1px solid #e2e8f0; padding: 2rem 1rem; text-align: center; }
+        header h1 { margin: 0; color: var(--primary); font-size: 2.2rem; }
+        header p { color: var(--text-light); margin-top: 0.5rem; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); }
+        .card h2 { margin-top: 0; color: var(--text); }
+        .meta { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: 3rem; }
     </style>
 </head>
 <body>
+    <header>
+        <h1>🤖 مدونة التقنية والذكاء الاصطناعي</h1>
+        <p>مقالات متجددة تلقائياً باللغتين العربية والإنجليزية حول أحدث الابتكارات التقنية</p>
+    </header>
+
     <div class="container">
-        <h1>مرحباً بكم في مدونة الذكاء الاصطناعي والتقنية</h1>
-        <p>موقعنا التلقائي المتجدد باللغتين العربية والإنجليزية</p>
-        <div class="welcome">
-            <h3>🤖 البوت يعمل بكفاءة عالية!</h3>
-            <p>تم تفعيل النشر التلقائي بنجاح. يتم توليد ونشر أحدث المقالات التقنية والذكاء الاصطناعي هنا باستمرار.</p>
+        <div class="card">
+            <span class="badge">ترحيب</span>
+            <h2>مرحباً بكم في منصتنا الآلية</h2>
+            <div class="meta">تحديث تلقائي • مستمر</div>
+            <p>يقوم نظام الذكاء الاصطناعي بتوليد ونشر أحدث المقالات التقنية وحил الهواتف والربح من المنتجات الرقمية هنا بشكل دوري ومستمر.</p>
         </div>
     </div>
+
+    <footer>
+        <p>&copy; 2026 جميع الحقوق محفوظة - مدونة التقنية والذكاء الاصطناعي</p>
+    </footer>
 </body>
 </html>
