@@ -90,7 +90,8 @@ en_cat = data.get('en', {}).get('category', 'AI-Tech')
 en_content = data.get('en', {}).get('content', 'Article content coming soon.')
 
 # حفظ المقال العربي
-ar_filename = f"_posts/{date_str}-{ar_title.replace(' ', '-').lower()[:30]}.md"
+clean_ar = re.sub(r'[^\w\s-]', '', ar_title).strip().replace(' ', '-')[:30] or 'ar-post'
+ar_filename = f"_posts/{date_str}-{clean_ar}.md"
 ar_frontmatter = f"""---
 layout: post
 title: "{ar_title}"
@@ -105,7 +106,8 @@ with open(ar_filename, "w", encoding="utf-8") as f:
     f.write(ar_frontmatter)
 
 # حفظ المقال الإنجليزي
-en_filename = f"_posts/{date_str}-en-{en_title.replace(' ', '-').lower()[:30]}.md"
+clean_en = re.sub(r'[^a-zA-Z0-9\s-]', '', en_title).strip().replace(' ', '-').lower()[:30] or 'en-post'
+en_filename = f"_posts/{date_str}-en-{clean_en}.md"
 en_frontmatter = f"""---
 layout: post
 title: "{en_title}"

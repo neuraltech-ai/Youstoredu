@@ -1,41 +1,85 @@
+---
+---
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدونة التقنية والذكاء الاصطناعي</title>
+    <title>{{ site.title }}</title>
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b; --text-light: #64748b; }
         body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
-        header { background: var(--card-bg); border-bottom: 1px solid #e2e8f0; padding: 2rem 1rem; text-align: center; }
-        header h1 { margin: 0; color: var(--primary); font-size: 2.2rem; }
+        header { background: var(--card-bg); border-bottom: 1px solid #e2e8f0; padding: 2.5rem 1rem; text-align: center; }
+        header h1 { margin: 0; color: var(--primary); font-size: 2rem; }
         header p { color: var(--text-light); margin-top: 0.5rem; }
         .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-3px); }
-        .card h2 { margin-top: 0; color: var(--text); }
-        .meta { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; }
-        .badge { background: #dbeafe; color: #1e40af; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem; }
+        .tab-btn { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; background: #e2e8f0; color: var(--text); cursor: pointer; font-weight: bold; font-family: inherit; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; border: 1px solid #f1f5f9; }
+        .card:hover { transform: translateY(-3px); border-color: #cbd5e1; }
+        .card h2 { margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 1.4rem; }
+        .card h2 a { color: var(--text); text-decoration: none; }
+        .card h2 a:hover { color: var(--primary); }
+        .meta { font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.8rem; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .badge-en { background: #dcfce7; color: #166534; }
+        .read-more { display: inline-block; margin-top: 0.5rem; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
         footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: 3rem; }
     </style>
 </head>
 <body>
     <header>
-        <h1>🤖 مدونة التقنية والذكاء الاصطناعي</h1>
-        <p>مقالات متجددة تلقائياً باللغتين العربية والإنجليزية حول أحدث الابتكارات التقنية</p>
+        <h1>🤖 {{ site.title }}</h1>
+        <p>{{ site.description }}</p>
     </header>
 
     <div class="container">
-        <div class="card">
-            <span class="badge">ترحيب</span>
-            <h2>مرحباً بكم في منصتنا الآلية</h2>
-            <div class="meta">تحديث تلقائي • مستمر</div>
-            <p>يقوم نظام الذكاء الاصطناعي بتوليد ونشر أحدث المقالات التقنية وحил الهواتف والربح من المنتجات الرقمية هنا بشكل دوري ومستمر.</p>
+        <!-- أزرار فلترة اللغة -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="filterPosts('all', this)">الكل (All)</button>
+            <button class="tab-btn" onclick="filterPosts('ar', this)">العربية</button>
+            <button class="tab-btn" onclick="filterPosts('en', this)">English</button>
+        </div>
+
+        <div id="posts-list">
+            {% for post in site.posts %}
+            <div class="card post-item" data-lang="{{ post.lang | default: 'ar' }}" {% if post.lang == 'en' %}dir="ltr"{% endif %}>
+                <span class="badge {% if post.lang == 'en' %}badge-en{% endif %}">
+                    {{ post.categories | first | default: 'Tech' }} ({{ post.lang | upcase | default: 'AR' }})
+                </span>
+                <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+                <div class="meta">📅 {{ post.date | date: "%Y-%m-%d" }}</div>
+                <p>{{ post.content | strip_html | truncatewords: 30 }}</p>
+                <a class="read-more" href="{{ post.url | relative_url }}">
+                    {% if post.lang == 'en' %}Read Full Article &rarr;{% else %}اقرأ المقال كاملاً &larr;{% endif %}
+                </a>
+            </div>
+            {% else %}
+            <div class="card">
+                <h2>جاري تجهيز المقالات...</h2>
+                <p>سيتم عرض المقالات هنا تلقائياً فور توليدها بواسطة البوت.</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 جميع الحقوق محفوظة - مدونة التقنية والذكاء الاصطناعي</p>
+        <p>&copy; 2026 جميع الحقوق محفوظة - {{ site.title }}</p>
     </footer>
+
+    <script>
+        function filterPosts(lang, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.post-item').forEach(item => {
+                if (lang === 'all' || item.getAttribute('data-lang') === lang) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
