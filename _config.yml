@@ -11,6 +11,3 @@ permalink: /:year/:month/:day/:title.html
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
-
-baseurl: "/neuraltech-ai"
-url: "https://neuraltech-ai.github.io"

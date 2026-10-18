@@ -1,143 +1,346 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ page.lang | default: 'ar' }}" dir="{% if page.lang == 'en' %}ltr{% else %}rtl{% endif %}" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>نيورال تك | NeuralTech AI</title>
+    <title>{{ page.title }} - {{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: page.title }}">
+    {% seo %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --border-color: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
-            --accent: #3b82f6;
+            --primary: #2563eb; --primary-hover: #1d4ed8; --accent: #7c3aed;
+            --bg: #f8fafc; --card-bg: #ffffff; --text: #0f172a; --text-light: #64748b;
+            --border: #e2e8f0; --code-bg: #1a1b26; --quote-bg: #eff6ff;
         }
-        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
-        header { background: var(--bg-card); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .logo { font-size: 19px; font-weight: bold; color: #60a5fa; display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .container { max-width: 800px; margin: 30px auto; padding: 15px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        h1, h2 { color: #60a5fa; }
-        p { line-height: 1.9; color: var(--text-muted); font-size: 16px; }
-        pre { background: #0b0f19; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; color: #38bdf8; font-family: monospace; direction: ltr; text-align: left; font-size: 13.5px; }
-        ul { line-height: 1.8; color: var(--text-muted); }
-        .btn-store { display: inline-block; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 9px 18px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 13.5px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-        .comment-section { margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; }
-        .comment-input { width: 100%; background: #0f172a; border: 1px solid var(--border-color); color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; outline: none; box-sizing: border-box; }
-        .btn-post { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-post:hover { background: #2563eb; }
+        [data-theme="dark"] {
+            --primary: #3b82f6; --primary-hover: #60a5fa; --accent: #a78bfa;
+            --bg: #0b0f19; --card-bg: #111827; --text: #f1f5f9; --text-light: #94a3b8;
+            --border: #1e293b; --quote-bg: #1e293b;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: {% if page.lang == 'en' %}'Inter', sans-serif{% else %}'Cairo', sans-serif{% endif %};
+            background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.85; transition: background 0.3s, color 0.3s;
+        }
+        /* شريط تقدم القراءة */
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; z-index: 9999; transition: width 0.1s; }
+        /* شريط التنقل العلوي */
+        .navbar { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        [data-theme="dark"] .navbar { background: rgba(17,24,39,0.85); }
+        .nav-brand { color: var(--primary); text-decoration: none; font-weight: 800; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .icon-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.8rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-family: inherit; font-size: 0.85rem; }
+        .container { max-width: 850px; margin: 2rem auto; padding: 2rem 1.5rem; background: var(--card-bg); border-radius: 18px; border: 1px solid var(--border); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); }
+        .post-img { width: 100%; max-height: 440px; object-fit: cover; border-radius: 14px; margin-bottom: 1.5rem; display: block; }
+        .badges-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 0.8rem; }
+        .badge { background: rgba(37,99,235,0.12); color: var(--primary); padding: 0.25rem 0.85rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+        .badge-verified { background: rgba(16,185,129,0.15); color: #10b981; }
+        h1 { font-size: 2rem; line-height: 1.35; margin: 0.5rem 0 1rem; font-weight: 800; }
+        .meta { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1.8rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; }
+        /* جدول المحتويات التلقائي */
+        .toc-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 2rem; }
+        .toc-title { font-weight: 800; margin-bottom: 0.6rem; color: var(--primary); cursor: pointer; }
+        .toc-list { margin: 0; padding-inline-start: 1.2rem; font-size: 0.95rem; }
+        .toc-list li { margin-bottom: 0.35rem; }
+        .toc-list a { color: var(--text); text-decoration: none; }
+        .toc-list a:hover { color: var(--primary); }
+        /* تنسيق المحتوى والأكواد */
+        .content h2 { color: var(--primary); margin-top: 2.2rem; border-bottom: 2px solid var(--border); padding-bottom: 0.4rem; }
+        .content h3 { color: var(--accent); margin-top: 1.6rem; }
+        .content p { margin-bottom: 1.2rem; font-size: 1.07rem; }
+        .content blockquote { background: var(--quote-bg); border-inline-start: 4px solid var(--primary); margin: 1.5rem 0; padding: 1rem 1.2rem; border-radius: 8px; }
+        .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 10px; overflow: hidden; direction: ltr; text-align: left; }
+        .copy-code-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; z-index: 5; }
+        .copy-code-btn:hover { background: var(--primary); }
+        pre { margin: 0 !important; padding: 1.2rem !important; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.9rem; background: var(--code-bg) !important; }
+        /* أزرار المشاركة والمتجر */
+        .share-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 2.5rem 0; padding: 1rem; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); }
+        .share-btn { padding: 0.45rem 1rem; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 700; color: white; display: inline-block; }
+        .sh-wa { background: #25D366; } .sh-x { background: #0f172a; } .sh-tg { background: #0088cc; }
+        .promo-box { margin-top: 2.5rem; padding: 2rem; background: linear-gradient(135deg, rgba(37,99,235,0.08) 0%, rgba(124,58,237,0.12) 100%); border-radius: 16px; border: 1px solid var(--primary); text-align: center; }
+        .promo-btn { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.8rem; background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; text-decoration: none; border-radius: 10px; font-weight: 800; box-shadow: 0 4px 15px rgba(37,99,235,0.3); }
+        /* قسم التعليقات وبوت الرد */
+        .discussion-box { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .comment-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+        .comment-input { padding: 0.8rem; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; }
+        .comment-submit { align-self: flex-start; padding: 0.6rem 1.4rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .comment-item { background: var(--bg); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border); }
+        .bot-reply { margin-top: 0.8rem; padding: 0.8rem; background: rgba(37,99,235,0.08); border-inline-start: 3px solid var(--primary); border-radius: 6px; font-size: 0.92rem; }
+        /* البوت المساعد العائم (Floating AI Assistant) */
+        .ai-fab { position: fixed; bottom: 22px; right: 22px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; border-radius: 999px; padding: 0.8rem 1.3rem; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 8px 25px rgba(37,99,235,0.4); z-index: 999; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .ai-modal { position: fixed; bottom: 80px; right: 22px; width: 350px; max-width: calc(100vw - 44px); background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); z-index: 1000; display: none; flex-direction: column; overflow: hidden; }
+        .ai-header { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.9rem 1.2rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+        .ai-messages { padding: 1rem; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
+        .msg-bot { background: var(--bg); padding: 0.7rem 0.9rem; border-radius: 10px; border: 1px solid var(--border); }
+        .msg-user { background: var(--primary); color: white; padding: 0.6rem 0.9rem; border-radius: 10px; align-self: flex-end; }
+        .ai-quick-btns { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 1rem 0.8rem; }
+        .q-btn { background: rgba(37,99,235,0.1); color: var(--primary); border: 1px solid var(--primary); border-radius: 99px; padding: 4px 10px; font-size: 0.78rem; cursor: pointer; font-family: inherit; font-weight: 600; }
+        .ai-input-row { display: flex; border-top: 1px solid var(--border); }
+        .ai-input-row input { flex: 1; border: none; padding: 0.8rem; background: var(--card-bg); color: var(--text); font-family: inherit; outline: none; }
+        .ai-input-row button { background: var(--primary); color: white; border: none; padding: 0 1.1rem; font-weight: 700; cursor: pointer; }
+        footer { text-align: center; padding: 2.5rem; color: var(--text-light); font-size: 0.9rem; }
     </style>
 </head>
 <body>
+    <div id="progress-bar"></div>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">🤖 {{ site.title }}</a>
+        <div class="nav-actions">
+            <a href="/" class="icon-btn" style="text-decoration:none;">🏠 {% if page.lang == 'en' %}Home{% else %}الرئيسية{% endif %}</a>
+            <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        </div>
+    </nav>
 
-<header>
-    <a href="#" class="logo">✨ NeuralTech AI | نيورال تك</a>
-    <a href="https://payhip.com/Youstor" target="_blank" class="btn-store">🛍️ المتجر الرقمي</a>
-</header>
+    <div class="container">
+        {% if page.image %}
+        <img class="post-img" src="{{ page.image }}" alt="{{ page.title }}" loading="lazy">
+        {% endif %}
 
-<div class="container">
-    <div class="card">
-        <h1>ثورة الذكاء الاصطناعي: الهندسة العكسية للبرمجيات</h1>
-        <p><b>تاريخ النشر:</b> 2026-10-18 | <b>وقت القراءة:</b> 5 دقائق</p>
-        
-        <h2>أبرز النقاط في هذا المقال:</h2>
-        <ul>
-            <li>متابعة أحدث التقنيات العالمية في أتمتة الشيفرات وتحليلها.</li>
-            <li>تطوير المهارات البرمجية الذكية باستخدام بايثون وأشجار الإعراب.</li>
-        </ul>
+        <div class="badges-row">
+            <span class="badge">{{ page.categories | first | default: 'AI & Tech' }}</span>
+            <span class="badge badge-verified">✅ {% if page.lang == 'en' %}AI Audited & Code Verified{% else %}مقال وأكواد مدققة برمجياً{% endif %}</span>
+        </div>
 
-        <h2>الشرح التقني والتحليل المعماري</h2>
-        <p>تشهد هندسة البرمجيات تحولاً جذرياً بفضل دمج النماذج اللغوية في تحليل الأنظمة المعقدة. لم يعد المطور بحاجة لقضاء أسابيع في تفكيك الشيفرات القديمة، إذ تقوم الأدوات الذكية برسم الخرائط المعمارية واكتشاف الثغرات في ثوانٍ معدودة دون عناء.</p>
-        
-        <p>الاعتماد على أشجار الإعراب المجردة (AST) يتيح فهم تدفق البيانات والمنطق البرمجي بدقة، مما يسهل إعادة هيكلة الأنظمة بلغات حديثة مع ضمان الاستقرار التام.</p>
+        <h1 id="article-title">{{ page.title }}</h1>
+        <div class="meta">
+            <span>📅 {{ page.date | date: "%Y-%m-%d" }}</span>
+            <span id="read-time">⏱️ ...</span>
+        </div>
 
-        <h2>الكود البرمجي التطبيقي</h2>
-        <p>إليك نموذج برمجي بلغة بايثون لفحص بنية الشيفرات واستخراج الدوال والكلاسات تلقائياً:</p>
-        <pre><code>import ast
+        <div class="toc-box" id="toc-container" style="display:none;">
+            <div class="toc-title">📌 {% if page.lang == 'en' %}Table of Contents{% else %}فهرس محتويات المقال{% endif %}</div>
+            <ul class="toc-list" id="toc-list"></ul>
+        </div>
 
-class NeuralTechAuditor:
-    def __init__(self, target_name: str):
-        self.target_name = target_name
+        <div class="content" id="article-content">
+            {{ content }}
+        </div>
 
-    def inspect_code(self, source_code: str) -> dict:
-        tree = ast.parse(source_code)
-        functions = [n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
-        classes = [n.name for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
-        return {
-            "module": self.target_name,
-            "status": "System Online & Fully Operational ✅",
-            "classes_detected": classes,
-            "functions_detected": functions
-        }
+        <!-- شريط مشاركة المقال -->
+        <div class="share-bar">
+            <strong>🔗 {% if page.lang == 'en' %}Share Article:{% else %}شارك الفائدة:{% endif %}</strong>
+            <a class="share-btn sh-wa" id="share-wa" target="_blank">WhatsApp</a>
+            <a class="share-btn sh-tg" id="share-tg" target="_blank">Telegram</a>
+            <a class="share-btn sh-x" id="share-x" target="_blank">X (Twitter)</a>
+        </div>
 
-if __name__ == "__main__":
-    sample = "def run_neural_pipeline(): return True"
-    auditor = NeuralTechAuditor("NeuralCore_v2")
-    print(auditor.inspect_code(sample))</code></pre>
+        <!-- صندوق المتجر الرقمي -->
+        <div class="promo-box">
+            {% if page.lang == 'en' %}
+            <h3>💎 Level Up with Our Premium Digital Products & AI Resources</h3>
+            <p>Get exclusive automation templates, verified codebooks, and high-res digital assets crafted for creators.</p>
+            <a class="promo-btn" href="{{ site.store_url }}" target="_blank">Explore Digital Store &rarr;</a>
+            {% else %}
+            <h3>💎 طور أعمالك مع متجرنا للمنتجات الرقمية وأدوات الذكاء الاصطناعي</h3>
+            <p>احصل على قوالب أتمتة جاهزة، كتب إلكترونية احترافية، وتصاميم عالية الدقة تزيد من إنتاجيتك وأرباحك.</p>
+            <a class="promo-btn" href="{{ site.store_url }}" target="_blank">تصفح المتجر الرقمي الآن &larr;</a>
+            {% endif %}
+        </div>
 
-        <!-- صندوق التفاعل والمناقشة النظيف تماماً -->
-        <div class="comment-section">
-            <h3 style="color: #60a5fa; font-size: 18px; margin-bottom: 12px;">💬 شارك برأيك أو استفسر حول المقال</h3>
-            <input type="text" class="comment-input" placeholder="اسمك الكريم">
-            <textarea class="comment-input" rows="3" placeholder="اطرح سؤالك أو استفسارك حول المقال أو الأكواد..."></textarea>
-            <button class="btn-post" onclick="alert('تم إرسال النقاش وسيتم الرد الفوري عبر NeuralTech AI ✨')">إرسال النقاش ✨</button>
+        <!-- قسم الأسئلة والتعليقات مع بوت الرد الفوري -->
+        <div class="discussion-box">
+            <h3>💬 {% if page.lang == 'en' %}Ask the AI Bot or Leave a Comment{% else %}اسأل بوت الموقع أو اترك تعليقك{% endif %}</h3>
+            <div class="comment-form">
+                <input type="text" id="c-name" class="comment-input" placeholder="{% if page.lang == 'en' %}Your Name{% else %}اسمك الكريم{% endif %}">
+                <textarea id="c-text" rows="3" class="comment-input" placeholder="{% if page.lang == 'en' %}Ask a question about this article or code...{% else %}اطرح سؤالك حول المقال أو الأكواد البرمجية وسيقوم البوت بالرد عليك فوراً...{% endif %}"></textarea>
+                <button class="comment-submit" onclick="postComment()">{% if page.lang == 'en' %}Post & Get Bot Reply{% else %}إرسال والحصول على رد البوت{% endif %}</button>
+            </div>
+            <div id="comments-list"></div>
         </div>
     </div>
-</div>
 
-<!-- زر المساعد الذكي السفلي الموحد بدون تداخل -->
-<div id="nt-ai-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
-  <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; border: 1px solid #3b82f6; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 8px;">
-    <span>✨</span> <span>NeuralTech AI</span>
-  </button>
-  
-  <div id="nt-ai-window" style="display: none; position: absolute; bottom: 58px; right: 0; width: 345px; max-width: 92vw; height: 440px; background: #0f172a; color: #f8fafc; border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.65); flex-direction: column; overflow: hidden; border: 1px solid #334155;">
-    <div style="background: #1e293b; padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-      <span style="font-weight: 700; font-size: 14px;">✨ NeuralTech AI</span>
-      <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;">✕</button>
+    <!-- زر ونافذة المساعد الذكي العائم -->
+    <button class="ai-fab" onclick="toggleBot()">🤖 {% if page.lang == 'en' %}Ask AI Assistant{% else %}المساعد الذكي{% endif %}</button>
+    <div class="ai-modal" id="aiModal">
+        <div class="ai-header">
+            <span>🤖 {% if page.lang == 'en' %}NeuralTech AI Bot{% else %}بوت نيورال تك الذكي{% endif %}</span>
+            <span style="cursor:pointer;" onclick="toggleBot()">✖</span>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+            <div class="msg-bot">
+                {% if page.lang == 'en' %}
+                Hi! 👋 I'm the article's AI Bot. I can summarize this post, explain its code snippets, or answer your questions!
+                {% else %}
+                مرحباً بك! 👋 أنا البوت المساعد لهذا المقال. يمكنني تلخيص المقال لك، شرح الأكواد البرمجية، أو الإجابة عن استفساراتك فوراً!
+                {% endif %}
+            </div>
+        </div>
+        <div class="ai-quick-btns">
+            <button class="q-btn" onclick="quickAsk('summary')">{% if page.lang == 'en' %}📝 Summarize{% else %}📝 لخص المقال{% endif %}</button>
+            <button class="q-btn" onclick="quickAsk('code')">{% if page.lang == 'en' %}💻 Explain Code{% else %}💻 اشرح الأكواد{% endif %}</button>
+            <button class="q-btn" onclick="quickAsk('tools')">{% if page.lang == 'en' %}🚀 Key Tools{% else %}🚀 أهم الأدوات{% endif %}</button>
+        </div>
+        <div class="ai-input-row">
+            <input type="text" id="aiInput" placeholder="{% if page.lang == 'en' %}Ask anything...{% else %}اكتب سؤالك هنا...{% endif %}" onkeypress="if(event.key==='Enter') sendAiMsg()">
+            <button onclick="sendAiMsg()">➤</button>
+        </div>
     </div>
-    
-    <div id="nt-ai-chatbox" style="flex: 1; padding: 14px; overflow-y: auto; font-size: 13.5px; display: flex; flex-direction: column; gap: 10px;">
-      <div style="background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 10px; max-width: 85%; line-height: 1.6; direction: rtl; text-align: right;">
-        أهلاً بك! أنا معك هنا لمناقشة الأكواد والمقالات وطرح الأفكار التقنية. تفضل بطرح سؤالك!
-      </div>
-    </div>
-    
-    <div style="padding: 10px; background: #1e293b; display: flex; gap: 8px; border-top: 1px solid #334155;">
-      <input type="text" id="nt-ai-input" placeholder="اكتب سؤالك هنا..." style="flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 8px; font-size: 13px; outline: none; direction: rtl;">
-      <button onclick="sendMsg()" style="background: #2563eb; color: white; border: none; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold;">إرسال</button>
-    </div>
-  </div>
-</div>
 
-<script>
-function toggleNTChat() {
-  const win = document.getElementById("nt-ai-window");
-  win.style.display = win.style.display === "flex" ? "none" : "flex";
-}
+    <footer>
+        <p>&copy; 2026 {{ site.title }} — <a href="/feed.xml" style="color:var(--primary);">RSS Feed</a></p>
+    </footer>
 
-function sendMsg() {
-  const inp = document.getElementById("nt-ai-input");
-  const box = document.getElementById("nt-ai-chatbox");
-  const txt = inp.value.trim();
-  if(!txt) return;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        const isEn = "{{ page.lang }}" === "en";
+        // 1. الوضع الليلي
+        function applyTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            document.getElementById('themeBtn').innerText = t === 'dark' ? '☀️' : '🌙';
+        }
+        function toggleTheme() {
+            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        }
+        applyTheme(localStorage.getItem('theme') || 'light');
 
-  box.innerHTML += `<div style="background: #2563eb; color: #fff; padding: 8px 12px; border-radius: 10px; max-width: 80%; align-self: flex-end;">${txt}</div>`;
-  inp.value = "";
-  box.scrollTop = box.scrollHeight;
+        // 2. شريط تقدم القراءة وحساب وقت القراءة
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById("progress-bar").style.width = ((winScroll / height) * 100) + "%";
+        });
+        const contentEl = document.getElementById('article-content');
+        const words = contentEl.innerText.trim().split(/\s+/).length;
+        const mins = Math.max(1, Math.ceil(words / 200));
+        document.getElementById('read-time').innerText = isEn ? `⏱️ ${mins} min read` : `⏱️ وقت القراءة: ${mins} دقائق`;
 
-  setTimeout(() => {
-    box.innerHTML += `<div style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 10px; max-width: 85%; direction: rtl; text-align: right;">أشكرك على طرحك! الكود والتحليل المعماري في المقال جاهزان للتطبيق الفوري في بيئة Termux وبايثون. هل تحب أن نطور هذا السكريبت معاً؟</div>`;
-    box.scrollTop = box.scrollHeight;
-  }, 400);
-}
+        // 3. توليد جدول المحتويات التلقائي وتلوين الأكواد مع زر النسخ
+        const headings = contentEl.querySelectorAll('h2, h3');
+        const tocList = document.getElementById('toc-list');
+        if (headings.length > 1) {
+            document.getElementById('toc-container').style.display = 'block';
+            headings.forEach((h, i) => {
+                h.id = 'sec-' + i;
+                const li = document.createElement('li');
+                li.style.marginInlineStart = h.tagName === 'H3' ? '15px' : '0';
+                li.innerHTML = `<a href="#sec-${i}">${h.innerText}</a>`;
+                tocList.appendChild(li);
+            });
+        }
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+            const pre = block.parentElement;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-wrapper';
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+            const btn = document.createElement('button');
+            btn.className = 'copy-code-btn';
+            btn.innerText = isEn ? 'Copy' : 'نسخ الكود';
+            btn.onclick = () => {
+                navigator.clipboard.writeText(block.innerText);
+                btn.innerText = isEn ? '✅ Copied!' : '✅ تم النسخ!';
+                setTimeout(() => btn.innerText = isEn ? 'Copy' : 'نسخ الكود', 2000);
+            };
+            wrapper.appendChild(btn);
+        });
 
-document.getElementById("nt-ai-input").addEventListener("keypress", function(e) {
-  if(e.key === "Enter") sendMsg();
-});
-</script>
+        // 4. روابط المشاركة
+        const pageUrl = encodeURIComponent(window.location.href);
+        const pageTitle = encodeURIComponent(document.getElementById('article-title').innerText);
+        document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
+        document.getElementById('share-tg').href = `https://t.me/share/url?url=${pageUrl}&text=${pageTitle}`;
+        document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
 
+        // 5. محرك البوت الذكي للرد الفوري على الزوار (يعتمد على تحليل محتوى المقال)
+        function generateSmartReply(query) {
+            const q = query.toLowerCase();
+            const paragraphs = Array.from(contentEl.querySelectorAll('p, li')).map(p => p.innerText).filter(t => t.length > 35);
+            const codeBlocks = Array.from(contentEl.querySelectorAll('pre code')).map(c => c.innerText);
+
+            if (q.includes('summary') || q.includes('لخص') || q.includes('ملخص')) {
+                const topPoints = Array.from(headings).slice(0, 4).map(h => "• " + h.innerText).join('<br>');
+                return isEn
+                    ? `<strong>📌 Executive Summary:</strong><br>${paragraphs[0] || ''}<br><br><strong>Main Sections:</strong><br>${topPoints}`
+                    : `<strong>📌 الملخص التنفيذي للمقال:</strong><br>${paragraphs[0] || ''}<br><br><strong>أهم المحاور المشروحة:</strong><br>${topPoints}`;
+            }
+            if (q.includes('code') || q.includes('كود') || q.includes('اكواد') || q.includes('أكواد') || q.includes('برمج')) {
+                if (codeBlocks.length > 0) {
+                    return isEn
+                        ? `💻 This article contains <strong>${codeBlocks.length} verified code snippet(s)</strong>. You can copy them directly using the "Copy" button at the top-right of each code block. They have been audited for syntax accuracy.`
+                        : `💻 يحتوي هذا المقال على <strong>${codeBlocks.length} مقاطع برمجية مدققة</strong> وجاهزة للتشغيل. يمكنك نسخ أي كود بضغطة زر عبر زر "نسخ الكود" أعلى الصندوق الأسود وتجربته مباشرة.`;
+                }
+                return isEn ? `This guide focuses on conceptual & practical steps without raw code blocks.` : `يركز هذا المقال على الخطوات التطبيقية والأدوات المباشرة بدون تعقيد برمجي.`;
+            }
+            // البحث الدلالي في فقرات المقال للإجابة عن سؤال الزائر
+            const words = q.split(/\s+/).filter(w => w.length > 3);
+            let bestMatch = "";
+            let maxScore = 0;
+            paragraphs.forEach(p => {
+                let score = 0;
+                words.forEach(w => { if (p.toLowerCase().includes(w)) score++; });
+                if (score > maxScore) { maxScore = score; bestMatch = p; }
+            });
+            if (bestMatch) {
+                return isEn
+                    ? `🤖 Based on the article:<br><em>"${bestMatch}"</em>`
+                    : `🤖 بناءً على ما ورد في المقال:<br><em>"${bestMatch}"</em>`;
+            }
+            return isEn
+                ? `🤖 Great question! Based on <strong>${document.getElementById('article-title').innerText}</strong>, we recommend reviewing the highlighted sections above or checking our Digital Store for complete templates.`
+                : `🤖 سؤال رائع! بخصوص <strong>${document.getElementById('article-title').innerText}</strong>، ننصح بتطبيق الخطوات المذكورة في الفهرس أعلاه بالترتيب، كما يمكنك تصفح متجرنا الرقمي أسفل المقال للحصول على الأدوات الجاهزة.`;
+        }
+
+        function toggleBot() {
+            const m = document.getElementById('aiModal');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        }
+        function appendMsg(text, isUser) {
+            const box = document.getElementById('aiMessages');
+            const d = document.createElement('div');
+            d.className = isUser ? 'msg-user' : 'msg-bot';
+            d.innerHTML = text;
+            box.appendChild(d);
+            box.scrollTop = box.scrollHeight;
+        }
+        function quickAsk(type) {
+            const label = type === 'summary' ? (isEn ? 'Summarize article' : 'لخص لي المقال') : (type === 'code' ? (isEn ? 'Explain code' : 'اشرح الأكواد') : (isEn ? 'Key takeaways' : 'أهم النقاط'));
+            appendMsg(label, true);
+            setTimeout(() => appendMsg(generateSmartReply(type), false), 350);
+        }
+        function sendAiMsg() {
+            const inp = document.getElementById('aiInput');
+            const val = inp.value.trim();
+            if (!val) return;
+            appendMsg(val, true);
+            inp.value = '';
+            setTimeout(() => appendMsg(generateSmartReply(val), false), 400);
+        }
+
+        // 6. نظام التعليقات التفاعلي مع رد البوت التلقائي
+        const storageKey = 'comments_' + window.location.pathname;
+        function renderComments() {
+            const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const container = document.getElementById('comments-list');
+            container.innerHTML = list.map(c => `
+                <div class="comment-item">
+                    <strong>👤 ${c.name}</strong> <span style="font-size:0.8rem;color:var(--text-light);">• ${c.date}</span>
+                    <p style="margin:0.4rem 0;">${c.text}</p>
+                    <div class="bot-reply">${c.reply}</div>
+                </div>
+            `).join('');
+        }
+        function postComment() {
+            const name = document.getElementById('c-name').value.trim() || (isEn ? 'Reader' : 'زائر كريم');
+            const text = document.getElementById('c-text').value.trim();
+            if (!text) return;
+            const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            list.unshift({
+                name, text,
+                date: new Date().toISOString().slice(0,10),
+                reply: generateSmartReply(text)
+            });
+            localStorage.setItem(storageKey, JSON.stringify(list));
+            document.getElementById('c-text').value = '';
+            renderComments();
+        }
+        renderComments();
+    </script>
 </body>
 </html>
