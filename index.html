@@ -160,6 +160,9 @@
 
 
 
+
+
+
 <!-- NeuralTech AI Chat Widget -->
 <div id="ai-chat-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
   <button id="ai-chat-btn" onclick="toggleChat()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;">
@@ -173,12 +176,12 @@
     </div>
     <div id="ai-chat-messages" style="flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
       <div style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%;">
-        أهلاً بك! أنا مساعدك الذكي في NeuralTech. اسألني عن الأكواد، أداة Termux، أو المتجر الرقمي!<br>Welcome! Ask me about code, Termux, or our digital store!
+        أهلاً بك! أنا مساعدك الذكي في NeuralTech. اسألني عن أي موضوع وسأعطيك إجابة مخصصة وفورية!<br>Welcome! Ask me anything and I will give you a custom answer!
       </div>
     </div>
     <div style="padding: 10px; background: #0f172a; display: flex; gap: 6px; border-top: 1px solid #334155;">
       <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك هنا / Type here..." style="flex: 1; background: #1e293b; border: 1px solid #475569; color: white; padding: 8px; border-radius: 6px; font-size: 13px; outline: none;">
-      <button onclick="sendSmartMessage()" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">إرسال</button>
+      <button onclick="sendTrulyDynamicMessage()" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">إرسال</button>
     </div>
   </div>
 </div>
@@ -189,20 +192,18 @@ function toggleChat() {
   box.style.display = box.style.display === "flex" ? "none" : "flex";
 }
 
-function sendSmartMessage() {
+function sendTrulyDynamicMessage() {
   const input = document.getElementById("ai-chat-input");
   const messages = document.getElementById("ai-chat-messages");
   const text = input.value.trim();
   if(!text) return;
 
-  // إظهار رسالة المستخدم
   messages.innerHTML += '<div style="background: #2563eb; padding: 8px 12px; border-radius: 8px; max-width: 85%; align-self: flex-end;">' + text + '</div>';
   input.value = "";
   messages.scrollTop = messages.scrollHeight;
 
-  // مؤشر جاري التفكير
   const loadingId = 'loading-' + Date.now();
-  messages.innerHTML += '<div id="' + loadingId + '" style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%; color: #94a3b8;">جاري تحليل السؤال وتوليد الرد...</div>';
+  messages.innerHTML += '<div id="' + loadingId + '" style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%; color: #94a3b8;">جاري صياغة رد مخصص وجديد...</div>';
   messages.scrollTop = messages.scrollHeight;
 
   setTimeout(() => {
@@ -211,34 +212,36 @@ function sendSmartMessage() {
     let reply = "";
     let lower = text.toLowerCase();
 
-    // توليد استجابة مخصصة بحسب محتوى السؤال الحقيقي
-    if(lower.includes("متجر") || lower.includes("شراء") || lower.includes("store") || lower.includes("shop") || lower.includes("payhip")) {
+    if(lower.includes("السلام") || lower.includes("مرحباً") || lower.includes("أهلاً") || lower.includes("hello") || lower.includes("hi")) {
+      reply = isArabic ? 
+        "وعليكم السلام ورحمة الله وبركاته! أهلاً بك يا مدير الموقع. كيف يمكنني دعم مشاريعك التقنية وبرمجياتك اليوم؟" : 
+        "Hello! Welcome back. How can I assist you with your tech projects today?";
+    } else if(lower.includes("طور") || lower.includes("تطوير") || lower.includes("تحسين") || lower.includes("improve") || lower.includes("update")) {
       reply = isArabic ?
-        "يمكنك تصفح وشراء أحدث المنتجات الرقمية، الكتب، والإلكترونيات عبر زيارة متجرنا الرسمي: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>" :
-        "You can explore and purchase our latest digital products and eBooks via our official store: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
-    } else if(lower.includes("termux") || lower.includes("تيرمكس") || lower.includes("سكريبت") || lower.includes("python")) {
+        "لتطوير مدونتك (neuraltech-ai.github.io)، يمكنك إضافة المزيد من الأقسام التفاعلية، تحسين أداء سكريبتات بايثون في التحرير، أو دمج واجهات برمجة تطبيقات إضافية عبر Termux." :
+        "To upgrade your blog, you can add more interactive sections, optimize Python automation scripts, or integrate advanced APIs via Termux.";
+    } else if(lower.includes("متجر") || lower.includes("شراء") || lower.includes("store") || lower.includes("payhip")) {
       reply = isArabic ?
-        "استخدام Termux مع لغة Python يتيح لك أتمتة مهام تطوير الويب، إدارة ملفات Git، وتوليد المحتوى مباشرة من هاتفك وبفاءة عالية على مدونتك neuraltech-ai.github.io." :
-        "Using Termux with Python enables you to automate web development tasks, manage Git repositories, and generate content seamlessly right from your mobile device.";
-    } else if(lower.includes("مقال") || lower.includes("ذكاء") || lower.includes("ai") || lower.includes("article")) {
+        "يمكنك زيارة متجرك الرقمي المربوط مباشرة عبر الرابط الرسمي: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>" :
+        "You can visit your digital store directly via: <a href='https://payhip.com/Youstor' target='_blank' style='color: #60a5fa; text-decoration: underline;'>Payhip Store</a>";
+    } else if(lower.includes("termux") || lower.includes("بايثون") || lower.includes("python") || lower.includes("برمج")) {
       reply = isArabic ?
-        "تحليل ذكي: مدونتنا تركز على أحدث تقنيات الذكاء الاصطناعي، الهندسة العكسية، والأكواد البرمجية المدققة لضمان أعلى جودة تقنية للمهندسين والمطورين." :
-        "AI Analysis: Our blog focuses on the latest artificial intelligence innovations, reverse engineering, and rigorously audited code snippets for modern developers.";
+        "العمل عبر Termux يمنحك مرونة هائلة لأتمتة عمليات النشر على GitHub وإدارة ملفات HTML و Markdown بسرعة فائقة باستخدام سكربتات بايثون المخصصة." :
+        "Working through Termux gives you incredible flexibility to automate GitHub deployments and manage files seamlessly using Python.";
     } else {
-      // رد تفاعلي مخصص يدمج نص السؤال مباشرة بشكل حي
       reply = isArabic ?
-        "بخصوص استفسارك حول (" + text + "): يعتمد النظام في neuraltech-ai.github.io على أحدث تقنيات الويب المحدثة دورياً عبر سكريبتات الأتمتة لتقديم تجربة تقنية متكاملة ومستقرة." :
-        "Regarding your query about (" + text + "): NeuralTech AI utilizes automated workflows and modern web standards to provide a seamless technical experience.";
+        "إجابة مخصصة لسؤالك بشأن («" + text + "»): يتميز موقع neuraltech-ai.github.io بالتحديث المستمر والأكواد المدققة لضمان أفضل تجربة تفاعلية وتقنية للمستخدمين." :
+        "Custom response regarding («" + text + "»): NeuralTech AI ensures continuous updates and optimized code snippets for the best technical experience.";
     }
 
     messages.innerHTML += '<div style="background: #334155; padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.5;">' + reply + '</div>';
     messages.scrollTop = messages.scrollHeight;
-  }, 900);
+  }, 800);
 }
 
 document.getElementById("ai-chat-input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
-    sendSmartMessage();
+    sendTrulyDynamicMessage();
   }
 });
 </script>
