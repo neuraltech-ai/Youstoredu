@@ -2,7 +2,7 @@ name: Bilingual Auto Blog Bot
 
 on:
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '0 8,20 * * *'
   workflow_dispatch:
 
 permissions:
@@ -12,19 +12,26 @@ jobs:
   write_and_publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install requests google-generativeai
-      - name: Run Claude Haiku Bot
+
+      - name: Install dependencies
+        run: pip install requests google-generativeai
+
+      - name: Run Gemini Blog Bot
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python bot.py
+
       - name: Commit and Push Posts
         run: |
-          git config user.name "AI Editor Bot"
-          git config user.email "bot@users.noreply.github.com"
-          git add .
-          git commit -m "Auto-publish Arabic & English articles via Claude" || exit 0
-          git push
+          git config --global user.name "Auto Blog Bot"
+          git config --global user.email "bot@youlaa24.github.io"
+          git pull origin main --rebase
+          git add _posts/ history.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-publish new bilingual articles" && git push origin main)

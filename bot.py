@@ -1,6 +1,8 @@
 import os
+import re
 import json
 import time
+import urllib.parse
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -38,11 +40,11 @@ prompt = f"""
 
 أجب بصيغة JSON صالح فقط (بدون أي نصوص إضافية قبله أو بعده) بهذا الهيكل الدقيق:
 {{
-  "image_prompt": "Modern digital art illustration representing the tech/science topic, vibrant colors, 4k, no text",
+  "image_prompt": "Modern digital art illustration representing the tech topic, vibrant colors, minimal, 4k, no text",
   "ar": {{
     "title": "عنوان المقال الجذاب بالعربية",
     "description": "وصف قصير لمحركات البحث بالعربية",
-    "category": "تقنية",
+    "category": "تقنية-وذكاء-اصطناعي",
     "content": "محتوى المقال العربي كاملاً بصيغة Markdown"
   }},
   "en": {{
@@ -80,24 +82,32 @@ data = json.loads(raw_text)
 os.makedirs("_posts", exist_ok=True)
 date_str = datetime.now().strftime("%Y-%m-%d")
 
-# استخدام تصنيفات افتراضية آمنة في حال عدم وجودها
+# توليد رابط الصورة التلقائية عبر Pollinations AI
+img_prompt = data.get("image_prompt", "Modern artificial intelligence technology digital art 4k")
+encoded_prompt = urllib.parse.quote(img_prompt)
+seed = int(time.time()) % 10000
+image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=800&height=420&nologo=true&seed={seed}"
+
 ar_title = data.get('ar', {}).get('title', 'مقال تقني جديد')
+ar_desc = data.get('ar', {}).get('description', ar_title)
 ar_cat = data.get('ar', {}).get('category', 'تقنية')
 ar_content = data.get('ar', {}).get('content', 'محتوى المقال قيد التحديث.')
 
 en_title = data.get('en', {}).get('title', 'New Tech Article')
+en_desc = data.get('en', {}).get('description', en_title)
 en_cat = data.get('en', {}).get('category', 'AI-Tech')
 en_content = data.get('en', {}).get('content', 'Article content coming soon.')
 
-# حفظ المقال العربي
 clean_ar = re.sub(r'[^\w\s-]', '', ar_title).strip().replace(' ', '-')[:30] or 'ar-post'
 ar_filename = f"_posts/{date_str}-{clean_ar}.md"
 ar_frontmatter = f"""---
 layout: post
-title: "{ar_title}"
+title: "{ar_title.replace('"', '')}"
+description: "{ar_desc.replace('"', '')}"
 date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S +0000')}
 categories: [{ar_cat}]
 lang: ar
+image: "{image_url}"
 ---
 
 {ar_content}
@@ -105,15 +115,16 @@ lang: ar
 with open(ar_filename, "w", encoding="utf-8") as f:
     f.write(ar_frontmatter)
 
-# حفظ المقال الإنجليزي
 clean_en = re.sub(r'[^a-zA-Z0-9\s-]', '', en_title).strip().replace(' ', '-').lower()[:30] or 'en-post'
 en_filename = f"_posts/{date_str}-en-{clean_en}.md"
 en_frontmatter = f"""---
 layout: post
-title: "{en_title}"
+title: "{en_title.replace('"', '')}"
+description: "{en_desc.replace('"', '')}"
 date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S +0000')}
 categories: [{en_cat}]
 lang: en
+image: "{image_url}"
 ---
 
 {en_content}
@@ -124,4 +135,4 @@ with open(en_filename, "w", encoding="utf-8") as f:
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(en_title + "\n")
 
-print("تم توليد ونشر المقالات بنجاح تام وبشكل آمن!")
+print("تم توليد المقالات والصور بنجاح تام!")

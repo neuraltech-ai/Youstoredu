@@ -4,31 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }} - {{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: page.title }}">
+    {% seo %}
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b; --text-light: #64748b; }
         body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.8; }
-        header { background: var(--card-bg); border-bottom: 1px solid #e2e8f0; padding: 1.2rem; text-align: center; }
-        header a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.1rem; }
-        .container { max-width: 800px; margin: 2rem auto; padding: 2rem 1.5rem; background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        h1 { color: var(--text); margin-top: 0.5rem; line-height: 1.4; }
+        header { background: var(--card-bg); border-bottom: 1px solid #e2e8f0; padding: 1.2rem; text-align: center; position: sticky; top: 0; z-index: 10; }
+        header a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.05rem; }
+        .container { max-width: 800px; margin: 2rem auto; padding: 1.5rem; background: var(--card-bg); border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .post-img { width: 100%; height: auto; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 1.5rem; display: block; }
+        h1 { color: var(--text); margin-top: 0.5rem; line-height: 1.4; font-size: 1.8rem; }
         .meta { color: var(--text-light); font-size: 0.9rem; margin-bottom: 2rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; }
-        .badge { background: #dbeafe; color: #1e40af; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }
         .content h2, .content h3 { color: var(--primary); margin-top: 1.8rem; }
         .content ul, .content ol { padding-inline-start: 1.5rem; }
-        .content p { margin-bottom: 1.2rem; }
+        .content p { margin-bottom: 1.2rem; font-size: 1.05rem; }
+        .promo-box { margin-top: 3rem; padding: 1.5rem; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; border: 1px solid #bfdbfe; text-align: center; }
+        .promo-box h3 { margin-top: 0; color: #1e3a8a; }
+        .promo-btn { display: inline-block; margin-top: 0.8rem; padding: 0.6rem 1.5rem; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
         footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.9rem; }
     </style>
 </head>
 <body>
     <header>
-        <a href="/">🏠 العودة إلى الصفحة الرئيسية</a>
+        <a href="/">🏠 {% if page.lang == 'en' %}Back to Home{% else %}العودة إلى الصفحة الرئيسية{% endif %}</a>
     </header>
     <div class="container">
-        <span class="badge">{{ page.categories | first | default: 'تقنية' }}</span>
+        {% if page.image %}
+        <img class="post-img" src="{{ page.image }}" alt="{{ page.title }}" loading="lazy">
+        {% endif %}
+        <span class="badge">{{ page.categories | first | default: 'Tech' }}</span>
         <h1>{{ page.title }}</h1>
-        <div class="meta">تاريخ النشر: {{ page.date | date: "%Y-%m-%d" }}</div>
+        <div class="meta">📅 {{ page.date | date: "%Y-%m-%d" }}</div>
         <div class="content">
             {{ content }}
+        </div>
+
+        <!-- صندوق الترويج للمنتجات الرقمية -->
+        <div class="promo-box">
+            {% if page.lang == 'en' %}
+            <h3>🚀 Explore Our Digital Products & eBooks</h3>
+            <p>Discover premium guides, high-res wallpapers, and productivity resources to level up your skills.</p>
+            <a class="promo-btn" href="https://ko-fi.com" target="_blank">Visit Store &rarr;</a>
+            {% else %}
+            <h3>🚀 اكتشف متجرنا للمنتجات الرقمية والكتب الإلكترونية</h3>
+            <p>احصل على أدلة احترافية، خلفيات عالية الدقة، وأدوات تزيد من إنتاجيتك ومهاراتك الرقمية.</p>
+            <a class="promo-btn" href="https://ko-fi.com" target="_blank">تصفح المتجر الآن &larr;</a>
+            {% endif %}
         </div>
     </div>
     <footer>

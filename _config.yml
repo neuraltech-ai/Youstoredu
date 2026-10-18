@@ -1,4 +1,8 @@
 title: "مدونة التقنية والذكاء الاصطناعي"
-description: "مقالات متجددة تلقائياً باللغتين العربية والإنجليزية"
+description: "مقالات متجددة تلقائياً باللغتين العربية والإنجليزية حول الذكاء الاصطناعي والمنتجات الرقمية"
+url: "https://youlaa24.github.io"
 markdown: kramdown
 permalink: /:year/:month/:day/:title.html
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
