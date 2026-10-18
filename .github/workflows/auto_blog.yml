@@ -32,6 +32,5 @@ jobs:
         run: |
           git config --global user.name "Auto Blog Bot"
           git config --global user.email "bot@youlaa24.github.io"
-          git pull origin main --rebase
           git add _posts/ history.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-publish new bilingual articles" && git push origin main)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-publish new bilingual articles" && git pull origin main --rebase && git push origin main)
