@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>نيورال تك | NeuralTech AI</title>
     <style>
         :root {
@@ -13,49 +12,105 @@
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
             --accent: #3b82f6;
+            --accent-hover: #2563eb;
         }
         body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
-        header { background: var(--bg-card); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .logo { font-size: 19px; font-weight: bold; color: #60a5fa; display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .container { max-width: 800px; margin: 30px auto; padding: 15px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        h1, h2 { color: #60a5fa; }
-        p { line-height: 1.9; color: var(--text-muted); font-size: 16px; }
-        pre { background: #0b0f19; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; color: #38bdf8; font-family: monospace; direction: ltr; text-align: left; font-size: 13.5px; }
-        ul { line-height: 1.8; color: var(--text-muted); }
-        .btn-store { display: inline-block; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 9px 18px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 13.5px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-        .comment-section { margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; }
-        .comment-input { width: 100%; background: #0f172a; border: 1px solid var(--border-color); color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; outline: none; box-sizing: border-box; }
-        .btn-post { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-post:hover { background: #2563eb; }
+        header { background: var(--bg-card); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; }
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .logo { font-size: 18px; font-weight: bold; color: #60a5fa; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-home { background: #334155; color: #fff; padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; transition: background 0.2s; }
+        .btn-home:hover { background: #475569; }
+        .container { max-width: 800px; margin: 25px auto; padding: 15px; }
+        
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .article-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
+        .article-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .article-card h2 { color: #60a5fa; margin-top: 0; margin-bottom: 10px; font-size: 20px; }
+        .meta { font-size: 13px; color: #94a3b8; margin-bottom: 12px; }
+        .excerpt { color: var(--text-muted); line-height: 1.6; font-size: 14.5px; }
+
+        .reader-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .reader-card h1 { color: #60a5fa; font-size: 24px; margin-top: 0; }
+        .reader-card p { line-height: 1.9; color: var(--text-muted); font-size: 16px; }
+        pre { background: #0b0f19; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; color: #38bdf8; font-family: monospace; direction: ltr; text-align: left; font-size: 13.5px; line-height: 1.6; }
+        .btn-store { display: inline-block; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 8px 16px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="#" class="logo">✨ NeuralTech AI | نيورال تك</a>
+    <div class="nav-left">
+        <button class="btn-home" onclick="showHome()">🏠 الرئيسية</button>
+        <div class="logo" onclick="showHome()">✨ NeuralTech AI</div>
+    </div>
     <a href="https://payhip.com/Youstor" target="_blank" class="btn-store">🛍️ المتجر الرقمي</a>
 </header>
 
 <div class="container">
-    <div class="card">
-        <h1>ثورة الذكاء الاصطناعي: الهندسة العكسية للبرمجيات</h1>
-        <p><b>تاريخ النشر:</b> 2026-10-18 | <b>وقت القراءة:</b> 5 دقائق</p>
+    <div id="home-view" class="view active">
+        <h1 style="color: #60a5fa; margin-bottom: 20px; font-size: 22px;">أحدث المقالات التقنية والبرمجية</h1>
         
-        <h2>أبرز النقاط في هذا المقال:</h2>
-        <ul>
-            <li>متابعة أحدث التقنيات العالمية في أتمتة الشيفرات وتحليلها.</li>
-            <li>تطوير المهارات البرمجية الذكية باستخدام بايثون وأشجار الإعراب.</li>
-        </ul>
+        <div class="article-card" onclick="openArticle('ai-reverse')">
+            <h2>ثورة الذكاء الاصطناعي: الهندسة العكسية للبرمجيات</h2>
+            <div class="meta">📅 2026-10-18 | ⏱️ وقت القراءة: 5 دقائق</div>
+            <div class="excerpt">كيف تعيد النماذج اللغوية تشكيل هندسة البرمجيات وأتمتة تحليل الأنظمة المعقدة باستخدام أشجار الإعراب المجردة (AST).</div>
+        </div>
 
-        <h2>الشرح التقني والتحليل المعماري</h2>
-        <p>تشهد هندسة البرمجيات تحولاً جذرياً بفضل دمج النماذج اللغوية في تحليل الأنظمة المعقدة. لم يعد المطور بحاجة لقضاء أسابيع في تفكيك الشيفرات القديمة، إذ تقوم الأدوات الذكية برسم الخرائط المعمارية واكتشاف الثغرات في ثوانٍ معدودة دون عناء.</p>
-        
-        <p>الاعتماد على أشجار الإعراب المجردة (AST) يتيح فهم تدفق البيانات والمنطق البرمجي بدقة، مما يسهل إعادة هيكلة الأنظمة بلغات حديثة مع ضمان الاستقرار التام.</p>
+        <div class="article-card" onclick="openArticle('termux-python')">
+            <h2>أتمتة تطوير الويب عبر الهاتف باستخدام Termux وبايثون</h2>
+            <div class="meta">📅 2026-10-17 | ⏱️ وقت القراءة: 4 دقائق</div>
+            <div class="excerpt">دليل عملي لتحويل هاتفك المحمول إلى محطة عمل متكاملة لإدارة مستودعات جيت هب وتشغيل سكريبتات الأتمتة بكفاءة عالية.</div>
+        </div>
+    </div>
 
-        <h2>الكود البرمجي التطبيقي</h2>
-        <p>إليك نموذج برمجي بلغة بايثون لفحص بنية الشيفرات واستخراج الدوال والكلاسات تلقائياً:</p>
-        <pre><code>import ast
+    <div id="reader-view" class="view">
+        <div class="reader-card">
+            <button onclick="showHome()" style="background: none; border: none; color: #60a5fa; cursor: pointer; font-size: 14px; font-weight: bold; margin-bottom: 15px; padding: 0;">← العودة إلى القائمة</button>
+            <h1 id="article-title">عنوان المقال</h1>
+            <div class="meta" id="article-meta">التاريخ ووقت القراءة</div>
+            <div id="article-content"></div>
+        </div>
+    </div>
+</div>
+
+<div id="nt-ai-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
+  <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; border: 1px solid #3b82f6; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 8px;">
+    <span>✨</span> <span>NeuralTech AI</span>
+  </button>
+  
+  <div id="nt-ai-window" style="display: none; position: absolute; bottom: 58px; right: 0; width: 345px; max-width: 92vw; height: 440px; background: #0f172a; color: #f8fafc; border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.65); flex-direction: column; overflow: hidden; border: 1px solid #334155;">
+    <div style="background: #1e293b; padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
+      <span style="font-weight: 700; font-size: 14px;">✨ NeuralTech AI</span>
+      <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;">✕</button>
+    </div>
+    
+    <div id="nt-ai-chatbox" style="flex: 1; padding: 14px; overflow-y: auto; font-size: 13.5px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 10px; max-width: 85%; line-height: 1.6; direction: rtl; text-align: right;">
+        أهلاً بك! أنا معك لمناقشة الأكواد والمقالات هنا. تفضل بطرح سؤالك مباشرة!
+      </div>
+    </div>
+    
+    <div style="padding: 10px; background: #1e293b; display: flex; gap: 8px; border-top: 1px solid #334155;">
+      <input type="text" id="nt-ai-input" placeholder="اكتب سؤالك هنا..." style="flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 8px; font-size: 13px; outline: none; direction: rtl;">
+      <button onclick="sendMsg()" style="background: #2563eb; color: white; border: none; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold;">إرسال</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const articlesData = {
+    "ai-reverse": {
+        title: "ثورة الذكاء الاصطناعي: الهندسة العكسية للبرمجيات",
+        meta: "📅 2026-10-18 | ⏱️ وقت القراءة: 5 دقائق",
+        body: `
+            <p>تشهد هندسة البرمجيات تحولاً جذرياً بفضل دمج النماذج اللغوية في تحليل الأنظمة المعقدة. لم يعد المطور بحاجة لقضاء أسابيع في تفكيك الشيفرات القديمة، إذ تقوم الأدوات الذكية برسم الخرائط المعمارية واكتشاف الثغرات في ثوانٍ معدودة.</p>
+            <h3 style="color: #60a5fa;">التحليل المعماري وأشجار الإعراب (AST)</h3>
+            <p>الاعتماد على أشجار الإعراب المجردة يتيح فهم تدفق البيانات والمنطق البرمجي بدقة، مما يسهل إعادة هيكلة الأنظمة بلغات حديثة دون أخطاء.</p>
+            <h3 style="color: #60a5fa;">الكود البرمجي التطبيقي</h3>
+            <p>نموذج برمجي بلغة بايثون لفحص بنية الشيفرات واستخراج الدوال والكلاسات تلقائياً:</p>
+            <pre><code>import ast
 
 class NeuralTechAuditor:
     def __init__(self, target_name: str):
@@ -76,66 +131,68 @@ if __name__ == "__main__":
     sample = "def run_neural_pipeline(): return True"
     auditor = NeuralTechAuditor("NeuralCore_v2")
     print(auditor.inspect_code(sample))</code></pre>
+        `
+    },
+    "termux-python": {
+        title: "أتمتة تطوير الويب عبر الهاتف باستخدام Termux وبايثون",
+        meta: "📅 2026-10-17 | ⏱️ وقت القراءة: 4 دقائق",
+        body: `
+            <p>يُعد Termux بيئة متكاملة تتيح للمطورين تشغيل سكريبتات بايثون وإدارة مستودعات Git مباشرة من أجهزة الهواتف الذكية بنظام أندرويد.</p>
+            <h3 style="color: #60a5fa;">إدارة النشر التلقائي عبر GitHub</h3>
+            <p>من خلال ربط سكريبتات التحرير الآلي بأوامر Git، يمكنك تحديث مقالاتك وموقعك بضغطة زر واحدة ودون الحاجة لجهاز حاسوب محمول.</p>
+            <h3 style="color: #60a5fa;">مثال لسكريبت أتمتة محلي</h3>
+            <pre><code>import os
 
-        <!-- صندوق التفاعل والمناقشة الأصلي النظيف -->
-        <div class="comment-section">
-            <h3 style="color: #60a5fa; font-size: 18px; margin-bottom: 12px;">💬 شارك برأيك أو استفسر حول المقال</h3>
-            <input type="text" class="comment-input" placeholder="اسمك الكريم">
-            <textarea class="comment-input" rows="3" placeholder="اطرح سؤالك أو استفسارك حول المقال أو الأكواد..."></textarea>
-            <button class="btn-post" onclick="alert('تم إرسال النقاش بنجاح ✨')">إرسال النقاش ✨</button>
-        </div>
-    </div>
-</div>
+def git_auto_deploy(commit_msg: str):
+    os.system("git add .")
+    os.system(f'git commit -m "{commit_msg}"')
+    os.system("git push origin main")
+    print("Deployment completed successfully! 🚀")
 
-<!-- زر المساعد الذكي السفلي الأصلي الأنيق -->
-<div id="nt-ai-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, sans-serif;">
-  <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 13.5px; cursor: pointer; box-shadow: 0 6px 20px rgba(37,99,235,0.4); display: flex; align-items: center; gap: 7px;">
-    <span>✨</span> <span>NeuralTech AI</span>
-  </button>
-  
-  <div id="nt-ai-window" style="display: none; position: absolute; bottom: 55px; right: 0; width: 330px; max-width: 90vw; height: 420px; background: #0f172a; color: #f8fafc; border-radius: 14px; box-shadow: 0 12px 32px rgba(0,0,0,0.65); flex-direction: column; overflow: hidden; border: 1px solid #334155; direction: rtl;">
-    <div style="background: #1e293b; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-      <span style="font-weight: 700; font-size: 13.5px; color: #60a5fa;">✨ NeuralTech AI</span>
-      <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 15px;">✕</button>
-    </div>
-    
-    <div id="nt-ai-chatbox" style="flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
-      <div style="background: #1e293b; border: 1px solid #334155; padding: 10px 12px; border-radius: 10px; max-width: 88%; line-height: 1.6; text-align: right;">
-        أهلاً بك! أنا معك هنا لمناقشة الأكواد والمقالات وطرح الأفكار التقنية. تفضل بطرح سؤالك!
-      </div>
-    </div>
-    
-    <div style="padding: 8px 10px; background: #1e293b; display: flex; gap: 6px; border-top: 1px solid #334155;">
-      <input type="text" id="nt-ai-input" placeholder="اكتب سؤالك هنا..." style="flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; outline: none; text-align: right;">
-      <button onclick="sendMsg()" style="background: #2563eb; color: white; border: none; padding: 0 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12.5px;">إرسال</button>
-    </div>
-  </div>
-</div>
+if __name__ == "__main__":
+    git_auto_deploy("Auto update from Termux mobile workspace")</code></pre>
+        `
+    }
+};
 
-<script>
+function showHome() {
+    document.getElementById('reader-view').classList.remove('active');
+    document.getElementById('home-view').classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+function openArticle(articleId) {
+    const art = articlesData[articleId];
+    if (!art) return;
+    document.getElementById('article-title').textContent = art.title;
+    document.getElementById('article-meta').textContent = art.meta;
+    document.getElementById('article-content').innerHTML = art.body;
+    document.getElementById('home-view').classList.remove('active');
+    document.getElementById('reader-view').classList.add('active');
+    window.scrollTo(0, 0);
+}
+
 function toggleNTChat() {
-  const win = document.getElementById("nt-ai-window");
-  win.style.display = win.style.display === "flex" ? "none" : "flex";
+    const win = document.getElementById("nt-ai-window");
+    win.style.display = win.style.display === "flex" ? "none" : "flex";
 }
 
 function sendMsg() {
-  const inp = document.getElementById("nt-ai-input");
-  const box = document.getElementById("nt-ai-chatbox");
-  const txt = inp.value.trim();
-  if(!txt) return;
-
-  box.innerHTML += `<div style="background: #2563eb; color: #fff; padding: 8px 12px; border-radius: 10px; max-width: 80%; align-self: flex-end; text-align: right;">${txt}</div>`;
-  inp.value = "";
-  box.scrollTop = box.scrollHeight;
-
-  setTimeout(() => {
-    box.innerHTML += `<div style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 10px; max-width: 85%; text-align: right;">أشكرك على طرحك! الكود والتحليل المعماري جاهزان.</div>`;
+    const inp = document.getElementById("nt-ai-input");
+    const box = document.getElementById("nt-ai-chatbox");
+    const txt = inp.value.trim();
+    if(!txt) return;
+    box.innerHTML += `<div style="background: #2563eb; color: #fff; padding: 8px 12px; border-radius: 10px; max-width: 80%; align-self: flex-end;">${txt}</div>`;
+    inp.value = "";
     box.scrollTop = box.scrollHeight;
-  }, 400);
+    setTimeout(() => {
+        box.innerHTML += `<div style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 10px; max-width: 85%; direction: rtl; text-align: right;">سؤال ممتاز! الموقع مصمم ليعمل بسلاسة بين قائمة المقالات وصفحات العرض. هل تحتاج مساعدة في أي تفصيل آخر؟</div>`;
+        box.scrollTop = box.scrollHeight;
+    }, 400);
 }
 
 document.getElementById("nt-ai-input").addEventListener("keypress", function(e) {
-  if(e.key === "Enter") sendMsg();
+    if(e.key === "Enter") sendMsg();
 });
 </script>
 
