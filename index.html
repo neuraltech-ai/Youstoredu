@@ -1,84 +1,136 @@
 ---
 ---
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ site.title }}</title>
+    <title>{{ site.title }} | {{ site.tagline }}</title>
     <meta name="description" content="{{ site.description }}">
     {% seo %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b; --text-light: #64748b; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
-        header { background: var(--card-bg); border-bottom: 1px solid #e2e8f0; padding: 2.5rem 1rem; text-align: center; }
-        header h1 { margin: 0; color: var(--primary); font-size: 2rem; }
-        header p { color: var(--text-light); margin-top: 0.5rem; }
-        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        .controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 2rem; }
-        .tabs { display: flex; gap: 8px; }
-        .tab-btn { padding: 0.5rem 1.1rem; border: none; border-radius: 8px; background: #e2e8f0; color: var(--text); cursor: pointer; font-weight: bold; font-family: inherit; }
+        :root {
+            --primary: #2563eb; --accent: #7c3aed; --bg: #f8fafc; --card-bg: #ffffff;
+            --text: #0f172a; --text-light: #64748b; --border: #e2e8f0;
+        }
+        [data-theme="dark"] {
+            --primary: #3b82f6; --accent: #a78bfa; --bg: #0b0f19; --card-bg: #111827;
+            --text: #f1f5f9; --text-light: #94a3b8; --border: #1e293b;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Cairo', 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.65; transition: background 0.3s, color 0.3s; }
+        .navbar { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        [data-theme="dark"] .navbar { background: rgba(17,24,39,0.85); }
+        .brand { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-right { display: flex; gap: 10px; align-items: center; }
+        .store-nav-btn { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; text-decoration: none; padding: 0.45rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 700; }
+        .theme-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.75rem; border-radius: 8px; cursor: pointer; }
+        /* Hero Section */
+        .hero { background: radial-gradient(circle at top right, rgba(37,99,235,0.12), rgba(124,58,237,0.08), transparent); padding: 3.5rem 1rem 2.5rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .hero-badge { display: inline-block; background: rgba(37,99,235,0.12); color: var(--primary); padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero h1 { margin: 0; font-size: 2.3rem; font-weight: 800; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-light); max-width: 650px; margin: 0.8rem auto 0; font-size: 1.05rem; }
+        /* Controls */
+        .container { max-width: 1120px; margin: 2rem auto; padding: 0 1.2rem; }
+        .controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 2rem; background: var(--card-bg); padding: 0.9rem; border-radius: 14px; border: 1px solid var(--border); }
+        .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tab-btn { padding: 0.5rem 1.1rem; border: 1px solid transparent; border-radius: 10px; background: var(--bg); color: var(--text); cursor: pointer; font-weight: 700; font-family: inherit; transition: 0.2s; }
         .tab-btn.active { background: var(--primary); color: white; }
-        .search-box { flex: 1; min-width: 200px; padding: 0.55rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.95rem; }
-        .card { background: var(--card-bg); border-radius: 14px; overflow: hidden; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; border: 1px solid #f1f5f9; }
-        .card:hover { transform: translateY(-3px); border-color: #cbd5e1; }
-        .card-img { width: 100%; height: 220px; object-fit: cover; display: block; }
-        .card-body { padding: 1.5rem; }
-        .card h2 { margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 1.35rem; }
+        .search-box { flex: 1; min-width: 220px; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-family: inherit; font-size: 0.95rem; outline: none; }
+        /* Grid Layout */
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.6rem; }
+        .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.25s, box-shadow 0.25s; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(0,0,0,0.12); border-color: var(--primary); }
+        .card-img-wrap { position: relative; height: 205px; overflow: hidden; background: #1e293b; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+        .card:hover .card-img { transform: scale(1.05); }
+        .card-body { padding: 1.4rem; display: flex; flex-direction: column; flex: 1; }
+        .badges-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+        .badge { background: rgba(37,99,235,0.12); color: var(--primary); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+        .badge-en { background: rgba(16,185,129,0.15); color: #10b981; }
+        .verified-tag { font-size: 0.75rem; color: #10b981; font-weight: 700; }
+        .card h2 { margin: 0.3rem 0 0.6rem; font-size: 1.25rem; line-height: 1.4; }
         .card h2 a { color: var(--text); text-decoration: none; }
         .card h2 a:hover { color: var(--primary); }
-        .meta { font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.8rem; }
-        .badge { background: #dbeafe; color: #1e40af; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
-        .badge-en { background: #dcfce7; color: #166534; }
-        .read-more { display: inline-block; margin-top: 0.5rem; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-        footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: 3rem; }
+        .card p { color: var(--text-light); font-size: 0.92rem; margin: 0 0 1.2rem; flex: 1; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 0.9rem; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--text-light); }
+        .read-more { color: var(--primary); text-decoration: none; font-weight: 800; }
+        footer { text-align: center; padding: 3rem 1rem; color: var(--text-light); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: 4rem; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🤖 {{ site.title }}</h1>
-        <p>{{ site.description }}</p>
-    </header>
+    <nav class="navbar">
+        <a href="/" class="brand">⚡ {{ site.title }}</a>
+        <div class="nav-right">
+            <a href="{{ site.store_url }}" target="_blank" class="store-nav-btn">🛍️ المتجر الرقمي</a>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <span class="hero-badge">✨ ذكاء اصطناعي • مراجعة برمجية دقيقة • تحديث يومي حي</span>
+        <h1>{{ site.title }}</h1>
+        <p>{{ site.tagline }}</p>
+    </section>
 
     <div class="container">
         <div class="controls">
             <div class="tabs">
-                <button class="tab-btn active" onclick="filterPosts('all', this)">الكل (All)</button>
-                <button class="tab-btn" onclick="filterPosts('ar', this)">العربية</button>
-                <button class="tab-btn" onclick="filterPosts('en', this)">English</button>
+                <button class="tab-btn active" onclick="filterPosts('all', this)">🌐 الكل (All)</button>
+                <button class="tab-btn" onclick="filterPosts('ar', this)">🇸🇦 العربية</button>
+                <button class="tab-btn" onclick="filterPosts('en', this)">🇺🇸 English</button>
             </div>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث في المقالات (Search)..." onkeyup="searchPosts()">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث عن أداة، لغة برمجة، أو موضوع..." onkeyup="applyFilters()">
         </div>
 
-        <div id="posts-list">
+        <div class="posts-grid" id="posts-list">
             {% for post in site.posts %}
-            <div class="card post-item" data-lang="{{ post.lang | default: 'ar' }}" {% if post.lang == 'en' %}dir="ltr"{% endif %}>
+            <article class="card post-item" data-lang="{{ post.lang | default: 'ar' }}" {% if post.lang == 'en' %}dir="ltr"{% endif %}>
                 {% if post.image %}
-                <a href="{{ post.url | relative_url }}">
+                <a href="{{ post.url | relative_url }}" class="card-img-wrap">
                     <img class="card-img" src="{{ post.image }}" alt="{{ post.title }}" loading="lazy">
                 </a>
                 {% endif %}
                 <div class="card-body">
-                    <span class="badge {% if post.lang == 'en' %}badge-en{% endif %}">
-                        {{ post.categories | first | default: 'Tech' }} ({{ post.lang | upcase | default: 'AR' }})
-                    </span>
+                    <div class="badges-top">
+                        <span class="badge {% if post.lang == 'en' %}badge-en{% endif %}">
+                            {{ post.categories | first | default: 'AI-Tech' }} ({{ post.lang | upcase | default: 'AR' }})
+                        </span>
+                        <span class="verified-tag">✓ Audited</span>
+                    </div>
                     <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-                    <div class="meta">📅 {{ post.date | date: "%Y-%m-%d" }}</div>
-                    <p>{{ post.description | default: post.content | strip_html | truncatewords: 28 }}</p>
-                    <a class="read-more" href="{{ post.url | relative_url }}">
-                        {% if post.lang == 'en' %}Read Full Article &rarr;{% else %}اقرأ المقال كاملاً &larr;{% endif %}
-                    </a>
+                    <p>{{ post.description | default: post.content | strip_html | truncatewords: 24 }}</p>
+                    <div class="card-footer">
+                        <span>📅 {{ post.date | date: "%Y-%m-%d" }}</span>
+                        <a class="read-more" href="{{ post.url | relative_url }}">
+                            {% if post.lang == 'en' %}Read Article &rarr;{% else %}اقرأ المقال &larr;{% endif %}
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </article>
             {% endfor %}
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 جميع الحقوق محفوظة - {{ site.title }}</p>
+        <p>&copy; 2026 {{ site.title }} — جميع المقالات والأكواد يتم تدقيقها آلياً • <a href="/feed.xml" style="color:var(--primary);">RSS</a></p>
     </footer>
 
     <script>
+        function applyTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            document.getElementById('themeBtn').innerText = t === 'dark' ? '☀️' : '🌙';
+        }
+        function toggleTheme() {
+            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        }
+        applyTheme(localStorage.getItem('theme') || 'light');
+
         let currentLang = 'all';
         function filterPosts(lang, btn) {
             currentLang = lang;
@@ -86,16 +138,12 @@
             btn.classList.add('active');
             applyFilters();
         }
-        function searchPosts() {
-            applyFilters();
-        }
         function applyFilters() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             document.querySelectorAll('.post-item').forEach(item => {
                 const matchLang = (currentLang === 'all' || item.getAttribute('data-lang') === currentLang);
-                const text = item.innerText.toLowerCase();
-                const matchSearch = text.includes(query);
-                item.style.display = (matchLang && matchSearch) ? 'block' : 'none';
+                const matchSearch = item.innerText.toLowerCase().includes(query);
+                item.style.display = (matchLang && matchSearch) ? 'flex' : 'none';
             });
         }
     </script>
