@@ -51,17 +51,17 @@ def call_gemini(prompt_text):
 live_news = get_live_tech_news()
 news_title = live_news[0] if live_news else "Advanced AI Engineering & Automation"
 
-# الخطوة الأولى: توليد المسودة الأولية
+# 1. توليد المسودة الأولية
 draft_prompt = f"""
 أنت كاتب تقني خبير. استناداً إلى هذه المستجدات التقنية: {live_news}
-اكتب مقالاً تقنياً عميقاً ومفصلاً باللغتين العربية والإنجليزية يتضمن أمثلة برمجية بايثون حقيقية وصحيحة، بصيغة JSON حصراً بهذا الشكل ودون أي نص خارجه:
+اكتب مقالاً تقنياً عميقاً ومفصلاً باللغتين العربية والإنجليزية يتضمن أمثلة برمجية بايثون حقيقية، بصيغة JSON حصراً بهذا الشكل ودون أي نص خارجه:
 {{
   "ar": {{
     "title": "عنوان المقال بالعربية",
     "description": "وصف قصير للمقال",
     "category": "ذكاء-اصطناعي",
     "key_takeaways": ["نقطة 1", "نقطة 2"],
-    "content": "محتوى المقال مع أكواد بايثون صحيحة."
+    "content": "محتوى المقال مع أكواد بايثون."
   }},
   "en": {{
     "title": "English Title",
@@ -87,14 +87,15 @@ except Exception:
         "en": {"title": f"AI Revolution: {news_title[:40]}", "description": "Comprehensive tech analysis", "category": "AI-Tech", "key_takeaways": ["Track modern tech"], "content": "Sample content with Python:\n```python\nprint('AI Engine')\n```"}
     }
 
-# الخطوة الثانية: وكيل المراجعة والتدقيق الإلزامي (Senior Code Reviewer & Auditor Agent)
+# 2. بوت التدقيق الذاتي الصارم جداً (Self-Correcting Audit Bot)
+# يقوم بمراجعة إملائية ولغوية وبرمجية صارمة، وإذا وجد أخطاء يقوم بتصحيحها فوراً
 audit_prompt = f"""
-أنت مراجع برمجية ومدقق تقني صارم جداً (Senior Code Reviewer & Technical Editor).
-قم بمراجعة المقال والأكواد البرمجية التالية بدقة تامة:
-1. تصحيح أي أخطاء برمجية في أكواد البايثون (Syntax & Logic).
-2. تحسين الصياغة التقنية لتكون احترافية وخالية من الحشو.
-3. التأكد من تطابق المعنى بين النسخة العربية والإنجليزية.
-أعِد الناتج النهائي بصيغة JSON صالحة حصراً وبنفس الهيكل ودون أي نص خارجها:
+أنت بوت تدقيق وصياغة صارم جداً (Strict AI Auditor & Proofreader).
+قم بفحص ومراجعة المقال والأكواد التالية بدقة مجهرية:
+1. التدقيق اللغوي والإملائي العربي: تأكد 100% من خلو النص من أي أخطاء مطبعية أو إملائية (مثل التباس الحروف كالقاف والفاء، أو التاء والطاء، وضمان لغة عربية سليمة وفصحى تماماً).
+2. صحة الأكواد: مراجعة أكواد بايثون وتأكيد صحتها المنطقية والبرمجية.
+إذا وجدت أي خطأ أو ركاكة، قم بتصحيحها فوراً في النسخة النهائية.
+أعِد الناتج النهائي حصراً بصيغة JSON صالحة وبنفس الهيكل ودون أي نص خارجها:
 {json.dumps(draft_data, ensure_ascii=False)}
 """
 
@@ -128,7 +129,7 @@ for lang_key, default_cat, prefix in [("ar", "تقنية", ""), ("en", "AI-Tech"
     content = str(lang_obj.get("content", ""))
 
     if takeaways and isinstance(takeaways, list):
-        box_title = "💡 أبرز النقاط المدققة برمجياً:" if lang_key == "ar" else "💡 Audited Key Takeaways:"
+        box_title = "💡 أبرز النقاط المدققة برمجياً ولغوياً:" if lang_key == "ar" else "💡 Audited Key Takeaways:"
         content = f"> **{box_title}**\n" + "\n".join([f"> - {item}" for item in takeaways]) + "\n\n" + content
 
     if lang_key == "ar":
@@ -153,4 +154,4 @@ verified: true
     with open(filename, "w", encoding="utf-8") as f:
         f.write(frontmatter)
 
-print("تمت مراجعة وتدقيق المقال والأكواد برمجياً بنجاح بواسطة الوكيل الذكي!")
+print("تمت مراجعة المقال والأكواد بواسطة بوت التدقيق الذاتي الصارم بنجاح!")
