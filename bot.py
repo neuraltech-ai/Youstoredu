@@ -8,14 +8,11 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 import google.generativeai as genai
 
-api_keys = [
-    os.environ.get("ANTHROPIC_API_KEY"),
-    os.environ.get("GEMINI2"),
-    os.environ.get("GEMINI3")
-]
-api_keys = [k for k in api_keys if k]
+API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+genai.configure(api_key=API_KEY)
 
 def get_live_tech_news():
+    """جلب أحدث المستجدات والأخبار التقنية الحية من مصادر عالمية متعددة"""
     feeds = [
         "https://news.google.com/rss/search?q=Artificial+Intelligence+OR+Programming+Tools+when:1d&hl=en-US&gl=US&ceid=US:en",
         "https://hnrss.org/frontpage",
@@ -29,26 +26,32 @@ def get_live_tech_news():
             res = requests.get(url, headers=headers, timeout=10)
             if res.status_code == 200:
                 root = ET.fromstring(res.content)
-                for item in root.findall(".//item")[:5]:
+                for item in root.findall(".//item")[:6]:
                     title = item.find("title")
                     if title is not None and title.text:
                         headlines.append(title.text.strip())
         except Exception:
             continue
-    return list(dict.fromkeys(headlines))[:15]
+    return list(dict.fromkeys(headlines))[:20]
 
-def call_gemini_with_rotation(prompt_text):
-    for i, key in enumerate(api_keys):
-        for model_name in ['gemini-3.8-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']:
-            try:
-                genai.configure(api_key=key)
-                model = genai.GenerativeModel(model_name)
-                response = model.generate_content(prompt_text)
-                if response and response.text:
-                    return response.text
-            except Exception as e:
-                time.sleep(1)
-    return None
+def call_gemini(prompt_text):
+    model = genai.GenerativeModel('gemini-3.8-flash')
+    for attempt in range(3):
+        try:
+            response = model.generate_content(prompt_text)
+            if response and response.text:
+                return response.text
+        except Exception as e:
+            print(f"محاولة اتصال رقم {attempt + 1} فشلت، الانتظار 15 ثانية... السبب: {e}")
+            time.sleep(15)
+    raise Exception("تعذر الاتصال بواجهة Gemini بعد 3 محاولات.")
+
+def extract_json(raw_text):
+    if "```json" in raw_text:
+        raw_text = raw_text.split("```json")[1].split("```")[0].strip()
+    elif "```" in raw_text:
+        raw_text = raw_text.split("```")[1].split("```")[0].strip()
+    return json.loads(raw_text)
 
 history_file = "history.txt"
 past_titles = []
@@ -57,80 +60,90 @@ if os.path.exists(history_file):
         past_titles = [line.strip() for line in f.readlines()]
 
 live_news = get_live_tech_news()
-news_title = live_news[0] if live_news else "Advanced AI Engineering & Automation"
+print(f"تم رصد {len(live_news)} خبراً ومستجداً تقنياً اليوم.")
 
-prompt = f"""
-أنت رئيس تحرير موقع تقني عالمي مزدوج اللغة.
-أحدث المستجدات اليوم: {live_news}
-اكتب مقالاً تقنياً احترافياً وعميقاً باللغتين العربية والإنجليزية بصيغة JSON صالح فقط بهذا الهيكل الدقيق وبدون أي نص خارجه:
+# المرحلة الأولى: كتابة المسودة الأولية بناءً على أحدث المستجدات
+draft_prompt = f"""
+أنت كبير المحررين والمهندسين في منصة تقنية عالمية مزدوجة اللغة (عربي/إنجليزي) بمستوى موقع The Verge و Smashing Magazine.
+إليك أحدث المستجدات والأخبار التقنية الرائجة اليوم في العالم:
+{live_news}
+
+المواضيع التي نشرناها سابقاً (تجنب تكرارها تماماً):
+{past_titles[-25:]}
+
+المهمة:
+اختر أحدث وأقوى موضوع تقني أو أداة ذكاء اصطناعي أو تقنية برمجية حديثة من المستجدات أعلاه، واكتب مقالاً شاملاً وعميقاً جداً باللغتين العربية والإنجليزية.
+يجب أن يتضمن المقال:
+- شرحاً عملياً وافياً ومحدثاً.
+- أمثلة برمجية أو أوامر تطبيقية حقيقية (Code blocks مع تحديد لغة البرمجة مثل ```python أو ```javascript أو ```bash) قابلة للتشغيل.
+- نصائح احترافية وأسئلة شائعة (FAQ) في نهاية المقال.
+
+أجب بصيغة JSON صالح فقط بهذا الهيكل:
 {{
+  "image_prompt": "Futuristic sleek editorial illustration representing the tech topic, ultra detailed, 8k, modern tech magazine style, no text",
   "ar": {{
-    "title": "أحدث تطورات الذكاء الاصطناعي والأتمتة الرقمية الحديثة",
-    "description": "دليلك الشامل لأحدث أدوات وتقنيات الذكاء الاصطناعي الرقمية وكيفية توظيفها برمجياً.",
-    "category": "تقنية",
-    "key_takeaways": ["فهم أحدث تقنيات الأتمتة", "تطبيق الذكاء الاصطناعي بكفاءة"],
-    "content": "نستعرض اليوم أحدث التطورات في عالم الذكاء الاصطناعي والبرمجة الحديثة وكيفية الاستفادة منها في تطوير مشاريعك الرقمية لتحقيق أقصى إنتاجية.\n\n```python\n# مثال عملي للأتمتة بالذكاء الاصطناعي\nimport os\nprint('NeuralTech AI Autonomous Engine Running...')\n```"
+    "title": "عنوان احترافي وجذاب بالعربية",
+    "description": "وصف ميتا احترافي لمحركات البحث (150 حرفاً)",
+    "category": "ذكاء-اصطناعي-وتقنية",
+    "key_takeaways": ["خلاصة سريعة 1", "خلاصة سريعة 2", "خلاصة سريعة 3"],
+    "content": "المحتوى الكامل بالعربية بصيغة Markdown مع عناوين ## و ### وأكواد برمجية وجداول"
   }},
   "en": {{
-    "title": "Latest Breakthroughs in Artificial Intelligence and Automation",
-    "description": "A comprehensive guide to modern AI tools and software engineering automation.",
+    "title": "Professional Catchy SEO English Title",
+    "description": "Compelling SEO meta description (150 chars)",
     "category": "AI-Engineering",
-    "key_takeaways": ["Explore modern automation workflows", "Boost software engineering productivity"],
-    "content": "Today we explore the latest breakthroughs in artificial intelligence and how software engineers can leverage them effectively in their daily workflows.\n\n```python\n# Practical AI Automation Snippet\nimport os\nprint('NeuralTech AI Autonomous Engine Running...')\n```"
+    "key_takeaways": ["Key takeaway 1", "Key takeaway 2", "Key takeaway 3"],
+    "content": "Full English article content in Markdown with ## and ### headings, verified code blocks, and tables"
   }}
 }}
 """
 
-raw_resp = call_gemini_with_rotation(prompt)
+print("جاري كتابة المسودة الأولية للمقالات...")
+draft_raw = call_gemini(draft_prompt)
+draft_data = extract_json(draft_raw)
 
-if raw_resp and "```json" in raw_resp:
-    raw_resp = raw_resp.split("```json")[1].split("```")[0].strip()
-elif raw_resp and "```" in raw_resp:
-    raw_resp = raw_resp.split("```")[1].split("```")[0].strip()
+# المرحلة الثانية: المراجع الصارم (تدقيق الأكواد البرمجية، المعلومات، واللغة)
+review_prompt = f"""
+أنت مدقق تقني ومراجع برمجي ولغوي صارم (Senior Staff Engineer & Technical Editor).
+قم بمراجعة مسودة المقال التالية بدقة متناهية:
+{json.dumps(draft_data, ensure_ascii=False)}
 
+مهام التدقيق الإلزامية:
+1. فحص جميع الأكواد البرمجية والأوامر: تأكد أنها خالية تماماً من الأخطاء البرمجية (Syntax/Logic errors)، وحديثة، ومكتوبة داخل أسوار ``` مع اسم اللغة الصحيح.
+2. فحص الدقة العلمية والتقنية: صحح أي معلومة غير دقيقة وتأكد من عمق الشرح ووضوحه.
+3. التدقيق اللغوي والتنسيق: تأكد من سلامة اللغة العربية الفصحى العصرية وسلامة اللغة الإنجليزية، وتنسيق العناوين الفرعية ## والقوائم.
+4. أعد إخراج كائن الـ JSON النهائي المصحح والمدقق بالكامل بنفس المفاتيح والهيكل تماماً (JSON صالح فقط بدون أي نص خارجه).
+"""
+
+print("جاري إجراء المراجعة التقنية والبرمجية الدقيقة (Code & Fact Audit)...")
 try:
-    data = json.loads(raw_resp)
-except Exception:
-    data = {
-        "ar": {
-            "title": f"ثورة الذكاء الاصطناعي: {news_title[:40]}",
-            "description": "تحليل لأحدث المستجدات التقنية وأدوات البرمجة الحديثة.",
-            "category": "تقنية",
-            "key_takeaways": ["متابعة أحدث التقنيات العالمية", "تطوير المهارات البرمجية الذكية"],
-            "content": f"نناقش اليوم أبرز المستجدات التقنية العالمية المتعلقة بـ: {news_title}\n\n```python\n# NeuralTech AI Execution Engine\nprint('System Online & Fully Operational')\n```"
-        },
-        "en": {
-            "title": f"AI Revolution: {news_title[:40]}",
-            "description": "An in-depth analysis of modern tech trends and engineering tools.",
-            "category": "AI-Engineering",
-            "key_takeaways": ["Track cutting-edge tech trends", "Leverage intelligent automation"],
-            "content": f"Today we examine the latest global technological breakthroughs regarding: {news_title}\n\n```python\n# NeuralTech AI Execution Engine\nprint('System Online & Fully Operational')\n```"
-        }
-    }
+    reviewed_raw = call_gemini(review_prompt)
+    data = extract_json(reviewed_raw)
+    print("اكتملت المراجعة الدقيقة بنجاح وتم اعتماد النسخة المصححة!")
+except Exception as e:
+    print(f"تنبيه: تم اعتماد المسودة الأساسية بسبب خطأ في تحليل المراجعة: {e}")
+    data = draft_data
 
 os.makedirs("_posts", exist_ok=True)
 date_str = datetime.now().strftime("%Y-%m-%d")
 
-# قائمة صور تقنية ثابتة وعالية الجودة تعمل للأبد دون أي حدود
-tech_images = [
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop"
-]
-image_url = tech_images[int(time.time()) % len(tech_images)]
+img_prompt = data.get("image_prompt", "Futuristic artificial intelligence editorial illustration 8k")
+encoded_prompt = urllib.parse.quote(img_prompt)
+seed = int(time.time()) % 10000
+image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1000&height=520&nologo=true&seed={seed}"
 
 for lang_key, default_cat, prefix in [("ar", "تقنية", ""), ("en", "AI-Tech", "en-")]:
     lang_obj = data.get(lang_key, {})
-    title = str(lang_obj.get("title", "Tech Article")).replace('"', "'")
-    desc = str(lang_obj.get("description", title)).replace('"', "'")
-    cat = str(lang_obj.get("category", default_cat))
+    title = lang_obj.get("title", "New Tech Article").replace('"', "'")
+    desc = lang_obj.get("description", title).replace('"', "'")
+    cat = lang_obj.get("category", default_cat)
     takeaways = lang_obj.get("key_takeaways", [])
-    content = str(lang_obj.get("content", ""))
+    content = lang_obj.get("content", "")
 
+    # دمج ملخص النقاط السريعة في بداية المقال إن وجد
     if takeaways and isinstance(takeaways, list):
         box_title = "💡 أبرز النقاط في هذا المقال:" if lang_key == "ar" else "💡 Key Takeaways:"
+        bullets = "\n".join([f"- {item}" for item in takeaways])
         content = f"> **{box_title}**\n" + "\n".join([f"> - {item}" for item in takeaways]) + "\n\n" + content
 
     if lang_key == "ar":
@@ -158,4 +171,4 @@ verified: true
 with open(history_file, "a", encoding="utf-8") as f:
     f.write(data.get('en', {}).get('title', 'Article') + "\n")
 
-print("تم التحديث بنجاح واعتماد الصور التقنية المستقرة!")
+print("تم نشر المقالات المدققة بنجاح!")
