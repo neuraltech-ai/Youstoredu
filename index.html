@@ -5,146 +5,199 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة الخطاطات الذهنية - YouStor Edu</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- رأس الصفحة -->
-    <header class="bg-blue-600 text-white py-6 shadow-md text-center">
-        <h1 class="text-3xl font-bold">منصة الخطاطات الذهنية</h1>
-        <p class="text-blue-100 text-sm mt-1">YouStor Edu - لجميع المستويات الابتدائية</p>
+<body class="bg-slate-50 min-h-screen pb-12">
+
+    <!-- الهيدر بالتصميم الأول الجذاب -->
+    <header class="bg-blue-600 text-white py-8 px-4 shadow-md text-center">
+        <h1 class="text-3xl font-extrabold tracking-wide mb-2">منصة الخطاطات الذهنية</h1>
+        <p class="text-blue-100 text-base font-medium">YouStor Edu - لجميع المستويات الابتدائية</p>
     </header>
 
-    <main class="max-w-xl mx-auto p-4 mt-6 bg-white rounded-xl shadow-lg border border-gray-100">
-        <!-- 1. اختيار المادة -->
-        <section class="mb-5">
-            <label class="block font-bold text-gray-800 mb-2">1. اختر المادة الدراسية:</label>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="setSubject('اللغة الفرنسية')" id="btn-اللغة الفرنسية" class="p-3 text-center rounded-lg border font-medium transition bg-blue-50 text-blue-600 border-blue-300">اللغة الفرنسية</button>
-                <button onclick="setSubject('اللغة العربية')" id="btn-اللغة العربية" class="p-3 text-center rounded-lg border font-medium transition bg-gray-50 text-gray-700 border-gray-200">اللغة العربية</button>
-                <button onclick="setSubject('الرياضيات')" id="btn-الرياضيات" class="p-3 text-center rounded-lg border font-medium transition bg-gray-50 text-gray-700 border-gray-200">الرياضيات</button>
-                <button onclick="setSubject('النشاط العلمي')" id="btn-النشاط العلمي" class="p-3 text-center rounded-lg border font-medium transition bg-gray-50 text-gray-700 border-gray-200">النشاط العلمي</button>
+    <!-- حاوية المنصة -->
+    <main class="max-w-md mx-auto p-6 mt-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+        
+        <!-- 1. اختيار المادة الدراسية -->
+        <div class="mb-6">
+            <label class="block font-bold text-gray-800 text-lg mb-3">1. اختر المادة الدراسية:</label>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="selectSubject('اللغة الفرنسية')" id="sub-اللغة الفرنسية" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all shadow-sm bg-blue-600 text-white">اللغة الفرنسية</button>
+                <button onclick="selectSubject('اللغة العربية')" id="sub-اللغة العربية" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100">اللغة العربية</button>
+                <button onclick="selectSubject('النشاط العلمي')" id="sub-النشاط العلمي" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100">النشاط العلمي</button>
+                <button onclick="selectSubject('الرياضيات')" id="sub-الرياضيات" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100">الرياضيات</button>
             </div>
-        </section>
-
-        <!-- 2. اختيار المستوى -->
-        <section class="mb-5">
-            <label class="block font-bold text-gray-800 mb-2">2. المستوى الدراسي:</label>
-            <select id="level" onchange="updateForm()" class="w-full p-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500">
-                <option value="1">المستوى الأول (1AEP)</option>
-                <option value="2">المستوى الثاني (2AEP)</option>
-                <option value="6">المستوى السادس (6AEP)</option>
-            </select>
-        </section>
-
-        <!-- 3. اختيار المرحلة -->
-        <section class="mb-5">
-            <label class="block font-bold text-gray-800 mb-2">3. المرحلة:</label>
-            <select id="stage" onchange="updateForm()" class="w-full p-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500">
-                <option value="1">المحطة / المرحلة 1 (S1)</option>
-                <option value="2" selected>المحطة / المرحلة 2 (S2)</option>
-            </select>
-        </section>
-
-        <!-- 4. اختيار الأسبوع -->
-        <section class="mb-5">
-            <label class="block font-bold text-gray-800 mb-2">4. الأسبوع:</label>
-            <select id="week" onchange="updateForm()" class="w-full p-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500">
-                <option value="1">الأسبوع 1</option>
-                <option value="2">الأسبوع 2</option>
-                <option value="3">الأسبوع 3</option>
-                <option value="4">الأسبوع 4</option>
-                <option value="5">الأسبوع 5</option>
-            </select>
-        </section>
-
-        <!-- 5. اختيار الحصة -->
-        <section class="mb-5">
-            <label class="block font-bold text-gray-800 mb-2">5. الحصة / المكون:</label>
-            <select id="session" onchange="updateForm()" class="w-full p-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500">
-                <option value="1">الحصة 1</option>
-                <option value="2">الحصة 2</option>
-                <option value="3">الحصة 3</option>
-                <option value="4">الحصة 4</option>
-                <option value="5">الحصة 5</option>
-                <option value="6">الحصة 6</option>
-            </select>
-        </section>
-
-        <!-- منطقة عرض النتيجة -->
-        <div id="result-area" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl hidden text-center">
-            <p id="result-text" class="font-bold text-blue-800 mb-3"></p>
-            <div id="pdf-container" class="space-y-3">
-                <a id="pdf-viewer" href="#" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg shadow transition">🔍 معاينة الخطاطة (PDF)</a>
-                <a id="download-btn" href="#" download class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg shadow transition">📥 تحميل الخطاطة</a>
-            </div>
-            <p id="not-found-msg" class="text-red-600 font-medium hidden">عذراً، الخطاطة غير متوفرة حالياً لهذا الاختيار.</p>
         </div>
+
+        <!-- القوائم المنسدلة التفاعلية -->
+        <div id="selectors-area" class="space-y-4">
+            
+            <!-- 2. المستوى الدراسي (من الأول إلى السادس) -->
+            <div>
+                <label class="block font-bold text-gray-800 mb-1.5">2. المستوى الدراسي:</label>
+                <select id="level-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                    <option value="1">المستوى الأول (1AEP)</option>
+                    <option value="2" selected>المستوى الثاني (2AEP)</option>
+                    <option value="3">المستوى الثالث (3AEP)</option>
+                    <option value="4">المستوى الرابع (4AEP)</option>
+                    <option value="5">المستوى الخامس (5AEP)</option>
+                    <option value="6">المستوى السادس (6AEP)</option>
+                </select>
+            </div>
+
+            <!-- 3. المرحلة (من الثانية إلى السادسة) -->
+            <div>
+                <label class="block font-bold text-gray-800 mb-1.5">3. المرحلة:</label>
+                <select id="stage-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                    <option value="2" selected>المرحلة الثانية (P2)</option>
+                    <option value="3">المرحلة الثالثة (P3)</option>
+                    <option value="4">المرحلة الرابعة (P4)</option>
+                    <option value="5">المرحلة الخامسة (P5)</option>
+                    <option value="6">المرحلة السادسة (P6)</option>
+                </select>
+            </div>
+
+            <!-- 4. الأسبوع (من الأول إلى السادس) -->
+            <div>
+                <label class="block font-bold text-gray-800 mb-1.5">4. الأسبوع:</label>
+                <select id="week-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                    <option value="1" selected>الأسبوع الأول (S1)</option>
+                    <option value="2">الأسبوع الثاني (S2)</option>
+                    <option value="3">الأسبوع الثالث (S3)</option>
+                    <option value="4">الأسبوع الرابع (S4)</option>
+                    <option value="5">الأسبوع الخامس (S5)</option>
+                    <option value="6">الأسبوع السادس (S6)</option>
+                </select>
+            </div>
+
+            <!-- 5. الحصة (من 1 إلى 6، وفي الرياضيات 5 حصص) -->
+            <div>
+                <label class="block font-bold text-gray-800 mb-1.5">5. الحصة:</label>
+                <select id="session-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                </select>
+            </div>
+
+        </div>
+
+        <!-- منطقة النتيجة والتحميل -->
+        <div id="result-area" class="mt-6 p-5 bg-blue-50/70 border border-blue-100 rounded-2xl text-center hidden">
+            <p id="result-text" class="font-bold text-blue-900 mb-4 text-sm leading-relaxed"></p>
+            
+            <div id="pdf-container" class="space-y-3">
+                <a id="pdf-viewer" href="#" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
+                    🔍 معاينة الخطاطة (PDF)
+                </a>
+                <a id="download-btn" href="#" download class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
+                    📥 تحميل الخطاطة
+                </a>
+            </div>
+
+            <p id="not-found-msg" class="text-amber-700 bg-amber-50 border border-amber-200 p-3 rounded-xl font-medium text-sm hidden">
+                ⏳ هذه الخطاطة قيد الإعداد وسيتم رفعها قريباً.
+            </p>
+        </div>
+
     </main>
 
     <script>
         let currentSubject = 'اللغة الفرنسية';
+        const subjects = ['اللغة الفرنسية', 'اللغة العربية', 'النشاط العلمي', 'الرياضيات'];
 
-        function setSubject(subject) {
-            currentSubject = subject;
-            ['اللغة الفرنسية', 'اللغة العربية', 'الرياضيات', 'النشاط العلمي'].forEach(s => {
-                const btn = document.getElementById(`btn-${s}`);
-                if (s === subject) {
-                    btn.className = "p-3 text-center rounded-lg border font-medium transition bg-blue-50 text-blue-600 border-blue-300";
+        function selectSubject(sub) {
+            currentSubject = sub;
+            subjects.forEach(s => {
+                const btn = document.getElementById(`sub-${s}`);
+                if (s === sub) {
+                    btn.className = "py-3.5 px-4 rounded-xl font-bold text-base transition-all shadow-sm bg-blue-600 text-white";
                 } else {
-                    btn.className = "p-3 text-center rounded-lg border font-medium transition bg-gray-50 text-gray-700 border-gray-200";
+                    btn.className = "py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100";
                 }
             });
-            updateForm();
+            updateSessionsList();
+            searchMindMap();
         }
 
+        function updateSessionsList() {
+            const sessionSelect = document.getElementById('session-select');
+            const currentVal = sessionSelect.value || "1";
+            const maxSessions = (currentSubject === 'الرياضيات') ? 5 : 6;
+            const sessionNames = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة"];
+            
+            sessionSelect.innerHTML = '';
+            for (let i = 1; i <= maxSessions; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `الحصة ${sessionNames[i-1]} (${i})`;
+                sessionSelect.appendChild(opt);
+            }
+
+            if (parseInt(currentVal) <= maxSessions) {
+                sessionSelect.value = currentVal;
+            } else {
+                sessionSelect.value = "1";
+            }
+        }
+
+        // ربط الاختيارات بأسماء ملفات الـ PDF التي رفعتها
         const database = {
-            "اللغة الفرنسية-2-2-1-1": "FR_N2_P2_S1_S1_MindMap.pdf",
+            // خطاطات المستوى الثاني - الأسبوع الأول (S1)
+            "اللغة الفرنسية-2-2-1-1": "FR_N2_P2_S1_S1_Pre.pdf",
             "اللغة الفرنسية-2-2-1-2": "FR_N2_P2_S1_S2_MindMap.pdf",
             "اللغة الفرنسية-2-2-1-3": "FR_N2_P2_S1_S3_MindMap.pdf",
             "اللغة الفرنسية-2-2-1-4": "FR_N2_P2_S1_S4_MindMap.pdf",
             "اللغة الفرنسية-2-2-1-5": "FR_N2_P2_S1_S5_MindMap.pdf",
             "اللغة الفرنسية-2-2-1-6": "FR_N2_P2_S1_S6_2Boxes_Fixed.pdf",
+
+            // خطاطات المستوى الثاني - الأسبوع الثاني (S2)
             "اللغة الفرنسية-2-2-2-1": "FR_N2_P2_S2_S1_MindMap.pdf",
             "اللغة الفرنسية-2-2-2-2": "FR_N2_P2_S2_S2_NCM8.pdf",
             "اللغة الفرنسية-2-2-2-3": "FR_N2_P2_S2_S3_NCM9.pdf",
             "اللغة الفرنسية-2-2-2-4": "FR_N2_P2_S2_S4_NCM10.pdf",
             "اللغة الفرنسية-2-2-2-5": "FR_N2_P2_S2_S5_NCM11.pdf",
             "اللغة الفرنسية-2-2-2-6": "FR_N2_P2_S2_S6_NCM12.pdf",
+
+            // خطاطات المستوى السادس - الفرنسية الأسبوع الأول
             "اللغة الفرنسية-6-2-1-1": "FR_N6_P2_S1_S1_NCM1.pdf",
             "اللغة الفرنسية-6-2-1-2": "FR_N6_P2_S1_S2_NCM2.pdf"
         };
 
-        function updateForm() {
-            const level = document.getElementById('level').value;
-            const stage = document.getElementById('stage').value;
-            const week = document.getElementById('week').value;
-            const session = document.getElementById('session').value;
+        function searchMindMap() {
+            const level = document.getElementById('level-select').value;
+            const stage = document.getElementById('stage-select').value;
+            const week = document.getElementById('week-select').value;
+            const session = document.getElementById('session-select').value;
 
             const searchID = `${currentSubject}-${level}-${stage}-${week}-${session}`;
+
             const resultArea = document.getElementById('result-area');
             const resultText = document.getElementById('result-text');
+            const pdfContainer = document.getElementById('pdf-container');
             const pdfViewer = document.getElementById('pdf-viewer');
             const downloadBtn = document.getElementById('download-btn');
-            const pdfContainer = document.getElementById('pdf-container');
             const notFoundMsg = document.getElementById('not-found-msg');
 
             resultArea.classList.remove('hidden');
 
             if (database[searchID]) {
                 const fileName = database[searchID];
-                resultText.innerText = `الخطاطة متوفرة: ${currentSubject} - مستوى ${level} - مرحلة ${stage} - أسبوع ${week} - حصة ${session}`;
+                resultText.innerText = `✅ الخطاطة متوفرة: ${currentSubject} | المستوى ${level} | المرحلة ${stage} | الأسبوع ${week} | الحصة ${session}`;
                 pdfViewer.href = fileName;
                 downloadBtn.href = fileName;
                 pdfContainer.classList.remove('hidden');
                 notFoundMsg.classList.add('hidden');
             } else {
-                resultText.innerText = `${currentSubject} (مستوى ${level} - مرحلة ${stage} - أسبوع ${week} - حصة ${session})`;
+                resultText.innerText = `${currentSubject} - المستوى ${level} - المرحلة ${stage} - الأسبوع ${week} - الحصة ${session}`;
                 pdfContainer.classList.add('hidden');
                 notFoundMsg.classList.remove('hidden');
             }
         }
 
-        // تشغيل التحقق عند فتح الصفحة
-        updateForm();
+        // التهيئة الأولية عند فتح الموقع
+        updateSessionsList();
+        searchMindMap();
     </script>
 </body>
 </html>
