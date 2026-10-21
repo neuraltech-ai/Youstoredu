@@ -24,7 +24,7 @@
         <!-- اختيار المادة -->
         <div class="mb-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <h2 class="text-xl font-bold text-gray-800 mb-4">1. اختر المادة الدراسية:</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="subjects-container">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <button onclick="selectSubject('اللغة العربية')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">اللغة العربية</button>
                 <button onclick="selectSubject('اللغة الفرنسية')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">اللغة الفرنسية</button>
                 <button onclick="selectSubject('الرياضيات')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">الرياضيات</button>
@@ -40,9 +40,9 @@
                 <!-- المستوى -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">المستوى:</label>
-                    <select id="level-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-blue-500 outline-none">
+                    <select id="level-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 outline-none">
                         <option value="1">الأول</option>
-                        <option value="2">الثاني</option>
+                        <option value="2" selected>الثاني</option>
                         <option value="3">الثالث</option>
                         <option value="4">الرابع</option>
                         <option value="5">الخامس</option>
@@ -53,8 +53,8 @@
                 <!-- المرحلة -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">المرحلة:</label>
-                    <select id="stage-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-blue-500 outline-none">
-                        <option value="2">الثانية</option>
+                    <select id="stage-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 outline-none">
+                        <option value="2" selected>الثانية</option>
                         <option value="3">الثالثة</option>
                         <option value="4">الرابعة</option>
                         <option value="5">الخامسة</option>
@@ -65,7 +65,7 @@
                 <!-- الأسبوع -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">الأسبوع:</label>
-                    <select id="week-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-blue-500 outline-none">
+                    <select id="week-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 outline-none">
                         <option value="1">الأسبوع 1</option>
                         <option value="2">الأسبوع 2</option>
                         <option value="3">الأسبوع 3</option>
@@ -75,10 +75,10 @@
                     </select>
                 </div>
 
-                <!-- الحصة (جديد) -->
+                <!-- الحصة -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">الحصة:</label>
-                    <select id="session-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-blue-500 outline-none">
+                    <select id="session-select" class="w-full border-gray-300 rounded-lg p-2 bg-gray-50 outline-none">
                         <option value="1">الحصة 1</option>
                         <option value="2">الحصة 2</option>
                         <option value="3">الحصة 3</option>
@@ -131,14 +131,17 @@
             
             const searchID = `${currentSubject}-${level}-${stage}-${week}-${session}`;
 
-            // قاعدة بيانات الملفات المطابقة لأسماء ملفاتك الحقيقية
+            // ربط الاختيارات بأسماء ملفات الـ PDF التي رفعتها
             const database = {
+                // خطاطات الأسبوع الأول (S1)
                 "اللغة الفرنسية-2-2-1-1": "FR_N2_P2_S1_S1_Premium_Fixed.pdf",
                 "اللغة الفرنسية-2-2-1-2": "FR_N2_P2_S1_S2_MindMap_Corrected.pdf",
                 "اللغة الفرنسية-2-2-1-3": "FR_N2_P2_S1_S3_MindMap.pdf",
                 "اللغة الفرنسية-2-2-1-4": "FR_N2_P2_S1_S4_MindMap.pdf",
                 "اللغة الفرنسية-2-2-1-5": "FR_N2_P2_S1_S5_MindMap.pdf",
                 "اللغة الفرنسية-2-2-1-6": "FR_N2_P2_S1_S6_2Boxes_Fixed.pdf",
+                
+                // خطاطات الأسبوع الثاني (S2)
                 "اللغة الفرنسية-2-2-2-1": "FR_N2_P2_S2_S1_MindMap.pdf",
                 "اللغة الفرنسية-2-2-2-2": "FR_N2_P2_S2_S2_NCM8.pdf",
                 "اللغة الفرنسية-2-2-2-3": "FR_N2_P2_S2_S3_NCM9.pdf",
@@ -157,7 +160,7 @@
             resultArea.classList.remove('hidden');
 
             if(database[searchID]) {
-                resultText.innerHTML = `✅ تم العثور على الخطاطة المطلوبة!`;
+                resultText.innerHTML = `✅ تم العثور على خطاطة الأسبوع ${week} - الحصة ${session}`;
                 pdfViewer.src = database[searchID];
                 downloadBtn.href = database[searchID];
                 
