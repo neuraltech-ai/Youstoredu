@@ -1,429 +1,117 @@
----
----
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ site.title }} | {{ site.tagline }}</title>
-    <meta name="description" content="{{ site.description }}">
-    {% seo %}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>منصة الخطاطات الذهنية | YouStor Edu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2563eb; --accent: #7c3aed; --bg: #f8fafc; --card-bg: #ffffff;
-            --text: #0f172a; --text-light: #64748b; --border: #e2e8f0;
-        }
-        [data-theme="dark"] {
-            --primary: #3b82f6; --accent: #a78bfa; --bg: #0b0f19; --card-bg: #111827;
-            --text: #f1f5f9; --text-light: #94a3b8; --border: #1e293b;
-        }
-        * { box-sizing: border-box; }
-        body { font-family: 'Cairo', 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.65; transition: background 0.3s, color 0.3s; }
-        .navbar { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
-        [data-theme="dark"] .navbar { background: rgba(17,24,39,0.85); }
-        .brand { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-        .nav-right { display: flex; gap: 10px; align-items: center; }
-        .store-nav-btn { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; text-decoration: none; padding: 0.45rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 700; }
-        .theme-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.75rem; border-radius: 8px; cursor: pointer; }
-        /* Hero Section */
-        .hero { background: radial-gradient(circle at top right, rgba(37,99,235,0.12), rgba(124,58,237,0.08), transparent); padding: 3.5rem 1rem 2.5rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .hero-badge { display: inline-block; background: rgba(37,99,235,0.12); color: var(--primary); padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; margin-bottom: 1rem; }
-        .hero h1 { margin: 0; font-size: 2.3rem; font-weight: 800; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { color: var(--text-light); max-width: 650px; margin: 0.8rem auto 0; font-size: 1.05rem; }
-        /* Controls */
-        .container { max-width: 1120px; margin: 2rem auto; padding: 0 1.2rem; }
-        .controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 2rem; background: var(--card-bg); padding: 0.9rem; border-radius: 14px; border: 1px solid var(--border); }
-        .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tab-btn { padding: 0.5rem 1.1rem; border: 1px solid transparent; border-radius: 10px; background: var(--bg); color: var(--text); cursor: pointer; font-weight: 700; font-family: inherit; transition: 0.2s; }
-        .tab-btn.active { background: var(--primary); color: white; }
-        .search-box { flex: 1; min-width: 220px; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-family: inherit; font-size: 0.95rem; outline: none; }
-        /* Grid Layout */
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.6rem; }
-        .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.25s, box-shadow 0.25s; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(0,0,0,0.12); border-color: var(--primary); }
-        .card-img-wrap { position: relative; height: 205px; overflow: hidden; background: #1e293b; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-        .card:hover .card-img { transform: scale(1.05); }
-        .card-body { padding: 1.4rem; display: flex; flex-direction: column; flex: 1; }
-        .badges-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
-        .badge { background: rgba(37,99,235,0.12); color: var(--primary); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
-        .badge-en { background: rgba(16,185,129,0.15); color: #10b981; }
-        .verified-tag { font-size: 0.75rem; color: #10b981; font-weight: 700; }
-        .card h2 { margin: 0.3rem 0 0.6rem; font-size: 1.25rem; line-height: 1.4; }
-        .card h2 a { color: var(--text); text-decoration: none; }
-        .card h2 a:hover { color: var(--primary); }
-        .card p { color: var(--text-light); font-size: 0.92rem; margin: 0 0 1.2rem; flex: 1; }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 0.9rem; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--text-light); }
-        .read-more { color: var(--primary); text-decoration: none; font-weight: 800; }
-        footer { text-align: center; padding: 3rem 1rem; color: var(--text-light); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: 4rem; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="{{ site.baseurl }}/" class="brand">⚡ {{ site.title }}</a>
-        <div class="nav-right">
-            <a href="https://payhip.com/Youstor" target="_blank" class="store-nav-btn">🛍️ المتجر الرقمي</a>
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
-        </div>
-    </nav>
 
-    <section class="hero">
-        <span class="hero-badge">✨ ذكاء اصطناعي • مراجعة برمجية دقيقة • تحديث يومي حي</span>
-        <h1>{{ site.title }}</h1>
-        <p>{{ site.tagline }}</p>
-    </section>
+    <header class="bg-blue-700 text-white p-6 shadow-md text-center">
+        <h1 class="text-3xl font-extrabold mb-2">منصة الخطاطات الذهنية</h1>
+        <p class="text-blue-200">YouStor Edu - لجميع المستويات الابتدائية</p>
+    </header>
 
-    <div class="container">
-        <div class="controls">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="filterPosts('all', this)">🌐 الكل (All)</button>
-                <button class="tab-btn" onclick="filterPosts('ar', this)">🇸🇦 العربية</button>
-                <button class="tab-btn" onclick="filterPosts('en', this)">🇺🇸 English</button>
+    <main class="max-w-4xl mx-auto mt-8 p-4">
+        
+        <!-- اختيار المادة -->
+        <div class="mb-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">1. اختر المادة الدراسية:</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="subjects-container">
+                <button onclick="selectSubject('اللغة العربية')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">اللغة العربية</button>
+                <button onclick="selectSubject('اللغة الفرنسية')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">اللغة الفرنسية</button>
+                <button onclick="selectSubject('الرياضيات')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">الرياضيات</button>
+                <button onclick="selectSubject('النشاط العلمي')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-800 py-3 rounded-lg font-semibold transition">النشاط العلمي</button>
             </div>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث عن أداة، لغة برمجة، أو موضوع..." onkeyup="applyFilters()">
         </div>
 
-        <div class="posts-grid" id="posts-list">
-            {% for post in site.posts %}
-            <article class="card post-item" data-lang="{{ post.lang | default: 'ar' }}" {% if post.lang == 'en' %}dir="ltr"{% endif %}>
-                {% if post.image %}
-                <a href="{{ post.url | relative_url }}" class="card-img-wrap">
-                    <img class="card-img" src="{{ post.image }}" alt="{{ post.title }}" loading="lazy">
-                </a>
-                {% endif %}
-                <div class="card-body">
-                    <div class="badges-top">
-                        <span class="badge {% if post.lang == 'en' %}badge-en{% endif %}">
-                            {{ post.categories | first | default: 'AI-Tech' }} ({{ post.lang | upcase | default: 'AR' }})
-                        </span>
-                        <span class="verified-tag">✓ Audited</span>
-                    </div>
-                    <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-                    <p>{{ post.description | default: post.content | strip_html | truncatewords: 24 }}</p>
-                    <div class="card-footer">
-                        <span>📅 {{ post.date | date: "%Y-%m-%d" }}</span>
-                        <a class="read-more" href="{{ post.url | relative_url }}">
-                            {% if post.lang == 'en' %}Read Article &rarr;{% else %}اقرأ المقال &larr;{% endif %}
-                        </a>
-                    </div>
+        <!-- عرض الاختيارات -->
+        <div id="selection-area" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100 fade-in mb-6">
+            <h3 id="selected-title" class="text-2xl font-bold text-blue-700 mb-6 border-b pb-2"></h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- المستوى -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">المستوى الدراسي:</label>
+                    <select id="level-select" class="w-full border-gray-300 rounded-lg p-3 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="1">المستوى الأول</option>
+                        <option value="2">المستوى الثاني</option>
+                        <option value="3">المستوى الثالث</option>
+                        <option value="4">المستوى الرابع</option>
+                        <option value="5">المستوى الخامس</option>
+                        <option value="6">المستوى السادس</option>
+                    </select>
                 </div>
-            </article>
-            {% endfor %}
-        </div>
-    </div>
 
-    <footer>
-        <p>&copy; 2026 {{ site.title }} — جميع المقالات والأكواد يتم تدقيقها آلياً • <a href="/feed.xml" style="color:var(--primary);">RSS</a></p>
-    </footer>
+                <!-- المرحلة -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">المرحلة:</label>
+                    <select id="stage-select" class="w-full border-gray-300 rounded-lg p-3 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="2">المرحلة الثانية</option>
+                        <option value="3">المرحلة الثالثة</option>
+                        <option value="4">المرحلة الرابعة</option>
+                        <option value="5">المرحلة الخامسة</option>
+                        <option value="6">المرحلة السادسة</option>
+                    </select>
+                </div>
+
+                <!-- الأسبوع -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">الأسبوع:</label>
+                    <select id="week-select" class="w-full border-gray-300 rounded-lg p-3 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="1">الأسبوع 1</option>
+                        <option value="2">الأسبوع 2</option>
+                        <option value="3">الأسبوع 3</option>
+                        <option value="4">الأسبوع 4</option>
+                        <option value="5">الأسبوع 5</option>
+                        <option value="6">الأسبوع 6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <button onclick="searchMindMap()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                    🔍 ابحث عن الخطاطة
+                </button>
+            </div>
+        </div>
+
+        <!-- النتيجة -->
+        <div id="result-area" class="hidden text-center fade-in bg-blue-50 p-8 rounded-xl border border-blue-100">
+            <p id="result-text" class="text-lg text-gray-700 mb-4"></p>
+            <div class="p-8 border-2 border-dashed border-blue-300 rounded-lg bg-white">
+                <p class="text-gray-400">سيتم عرض صورة الخطاطة أو ملف الـ PDF هنا.</p>
+                <p class="text-sm text-gray-400 mt-2">(قم برفع صور الخطاطات لاحقاً في GitHub لربطها هنا)</p>
+            </div>
+        </div>
+
+    </main>
 
     <script>
-        function applyTheme(t) {
-            document.documentElement.setAttribute('data-theme', t);
-            document.getElementById('themeBtn').innerText = t === 'dark' ? '☀️' : '🌙';
-        }
-        function toggleTheme() {
-            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('theme', next);
-            applyTheme(next);
-        }
-        applyTheme(localStorage.getItem('theme') || 'light');
+        let currentSubject = '';
 
-        let currentLang = 'all';
-        function filterPosts(lang, btn) {
-            currentLang = lang;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            applyFilters();
+        function selectSubject(subject) {
+            currentSubject = subject;
+            document.getElementById('selected-title').innerText = 'مادة: ' + subject;
+            document.getElementById('selection-area').classList.remove('hidden');
+            document.getElementById('result-area').classList.add('hidden');
         }
-        function applyFilters() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.post-item').forEach(item => {
-                const matchLang = (currentLang === 'all' || item.getAttribute('data-lang') === currentLang);
-                const matchSearch = item.innerText.toLowerCase().includes(query);
-                item.style.display = (matchLang && matchSearch) ? 'flex' : 'none';
-            });
+
+        function searchMindMap() {
+            const level = document.getElementById('level-select').options[document.getElementById('level-select').selectedIndex].text;
+            const stage = document.getElementById('stage-select').options[document.getElementById('stage-select').selectedIndex].text;
+            const week = document.getElementById('week-select').options[document.getElementById('week-select').selectedIndex].text;
+            
+            document.getElementById('result-area').classList.remove('hidden');
+            document.getElementById('result-text').innerHTML = `أنت تبحث عن: <strong>${currentSubject}</strong> - ${level} - ${stage} - ${week}`;
         }
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- NeuralTech Live Conversational AI -->
-<div id="nt-ai-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, -apple-system, sans-serif;">
-  <button id="nt-ai-trigger" onclick="toggleNTChat()" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; border: 1px solid #3b82f6; border-radius: 50px; padding: 10px 18px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
-    <span style="color: #60a5fa; font-size: 16px;">✨</span> <span>NeuralTech AI</span>
-  </button>
-  
-  <div id="nt-ai-window" style="display: none; position: absolute; bottom: 58px; right: 0; width: 345px; max-width: 92vw; height: 460px; background: #0f172a; color: #f8fafc; border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.65); flex-direction: column; overflow: hidden; border: 1px solid #334155;">
-    <div style="background: #1e293b; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #60a5fa;">✨</span>
-        <span style="font-weight: 700; font-size: 14px; letter-spacing: 0.3px;">NeuralTech AI</span>
-      </div>
-      <button onclick="toggleNTChat()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;">✕</button>
-    </div>
-    
-    <div id="nt-ai-chatbox" style="flex: 1; padding: 14px; overflow-y: auto; font-size: 14px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth;">
-      <div style="background: #1e293b; border: 1px solid #334155; padding: 12px 14px; border-radius: 12px 12px 12px 2px; max-width: 88%; line-height: 1.7; color: #e2e8f0; direction: rtl; text-align: right;">
-        أهلاً بك في <b>NeuralTech AI</b>! يسعدني محاورتك والإجابة عن أي سؤال تقني أو برمجي، أو شرح مقالات وأكواد الموقع. تفضل بطرح سؤالك مباشرة!
-      </div>
-    </div>
-    
-    <div style="padding: 10px; background: #1e293b; display: flex; gap: 8px; border-top: 1px solid #334155;">
-      <input type="text" id="nt-ai-input" placeholder="اكتب رسالتك هنا..." style="flex: 1; background: #0f172a; border: 1px solid #475569; color: #f8fafc; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; outline: none; direction: auto;">
-      <button onclick="sendNTMessage()" style="background: #2563eb; color: white; border: none; padding: 0 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px;">إرسال</button>
-    </div>
-  </div>
-</div>
-
-<script>
-let chatHistory = [
-  {
-    role: "system",
-    content: "أنت خبير برمجي ومستشار تقني متحدث باللغة العربية الفصحى السليمة والواضحة جداً في موقع NeuralTech AI (neuraltech-ai.github.io). قواعد صارمة جداً: 1. تحدث بلغة عربية فصحى طبيعية، سلسة، ومباشرة بدون أي أخطاء لغوية أو ترجمة حرفية ركيكة. 2. لا تذكر أبداً أشياء غير موجودة مثل (شاهد الفيديو أو ادخل Discord). 3. أجب عن السؤال المطروح مباشرة بأسلوب حواري ذكي ومختصر ومفيد. 4. إذا سأل الزائر عن المتجر الرقمي، اعرض له الرابط: https://payhip.com/Youstor ."
-  }
-];
-
-function formatAIResponse(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<b style="color:#93c5fd;">$1</b>')
-    .replace(/`([^`]+)`/g, '<code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#38bdf8;font-family:monospace;">$1</code>')
-    .replace(/https:\/\/payhip\.com\/Youstor/g, '<a href="https://payhip.com/Youstor" target="_blank" style="color:#60a5fa;text-decoration:underline;font-weight:bold;">متجر NeuralTech الرقمي</a>');
-}
-
-function toggleNTChat() {
-  const win = document.getElementById("nt-ai-window");
-  win.style.display = win.style.display === "flex" ? "none" : "flex";
-}
-
-async function fetchLiveAI(promptText) {
-  chatHistory.push({ role: "user", content: promptText });
-  const response = await fetch("https://text.pollinations.ai/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messages: chatHistory,
-      model: "openai",
-      temperature: 0.5
-    })
-  });
-  const reply = await response.text();
-  chatHistory.push({ role: "assistant", content: reply });
-  return reply;
-}
-
-async function sendNTMessage() {
-  const input = document.getElementById("nt-ai-input");
-  const box = document.getElementById("nt-ai-chatbox");
-  const text = input.value.trim();
-  if (!text) return;
-
-  const isAr = /[\u0600-\u06FF]/.test(text);
-  const userDiv = document.createElement("div");
-  userDiv.style.cssText = "background: #2563eb; color: white; padding: 10px 14px; border-radius: 12px 12px 2px 12px; max-width: 85%; align-self: flex-end; line-height: 1.6; word-wrap: break-word; direction: " + (isAr ? "rtl" : "ltr") + ";";
-  userDiv.textContent = text;
-  box.appendChild(userDiv);
-  input.value = "";
-  box.scrollTop = box.scrollHeight;
-
-  const loadDiv = document.createElement("div");
-  loadDiv.style.cssText = "background: #1e293b; color: #94a3b8; padding: 8px 14px; border-radius: 12px; max-width: 75%; font-size: 12.5px; direction: rtl;";
-  loadDiv.textContent = "جاري كتابة الرد...";
-  box.appendChild(loadDiv);
-  box.scrollTop = box.scrollHeight;
-
-  try {
-    const reply = await fetchLiveAI(text);
-    loadDiv.remove();
-
-    const aiDiv = document.createElement("div");
-    aiDiv.style.cssText = "background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 12px 14px; border-radius: 12px 12px 12px 2px; max-width: 90%; line-height: 1.7; white-space: pre-wrap; word-wrap: break-word; direction: " + (isAr ? "rtl" : "ltr") + "; text-align: " + (isAr ? "right" : "left") + ";";
-    aiDiv.innerHTML = formatAIResponse(reply);
-    box.appendChild(aiDiv);
-    box.scrollTop = box.scrollHeight;
-  } catch (err) {
-    loadDiv.remove();
-  }
-}
-
-// تحويل أزرار التعليقات داخل المقالات لتعمل بالذكاء الاصطناعي الحي أيضاً
-document.addEventListener("DOMContentLoaded", () => {
-  const inp = document.getElementById("nt-ai-input");
-  if(inp) {
-    inp.addEventListener("keypress", function(e) {
-      if (e.key === "Enter") sendNTMessage();
-    });
-  }
-});
-</script>
-
-
-
-<!-- NeuralTech Unified Engine v5 -->
-<style>
-  body { padding-bottom: 105px !important; }
-  /* إخفاء أي زر عائم مكرر (مثل Ask AI Assistant البنفسجي) للإبقاء على زر NeuralTech AI الموحد فقط */
-  button, a, div {
-    /* سيتم ضبط الأزرار المكررة برمجياً عبر الجافاسكريبت أدناه */
-  }
-  #nt-ai-trigger {
-    position: fixed !important;
-    bottom: 18px !important;
-    left: 18px !important;
-    right: auto !important;
-    z-index: 999999 !important;
-    background: linear-gradient(135deg, #1e293b, #0f172a) !important;
-    border: 1.5px solid #3b82f6 !important;
-    color: #f8fafc !important;
-    border-radius: 50px !important;
-    padding: 9px 18px !important;
-    font-size: 13.5px !important;
-    font-weight: 700 !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.65), 0 0 12px rgba(59, 130, 246, 0.35) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    cursor: pointer !important;
-  }
-  .nt-telemetry-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(30, 41, 59, 0.88);
-    border: 1px solid rgba(59, 130, 246, 0.35);
-    padding: 6px 15px;
-    border-radius: 30px;
-    font-size: 12.5px;
-    color: #cbd5e1;
-    margin: 12px auto 4px auto;
-    backdrop-filter: blur(8px);
-  }
-  .nt-live-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #10b981;
-    border-radius: 50%;
-    display: inline-block;
-    box-shadow: 0 0 8px #10b981;
-  }
-</style>
-<script>
-(function() {
-  const isEn = document.documentElement.lang === 'en' || document.body.innerText.includes('Explore Digital Store') || document.body.innerText.includes('Audited Key Takeaways');
-
-  // 1. إزالة أي زر عائم ثانٍ مكرر (مثل ✨ Ask AI Assistant أو اسأل المساعد الذكي) لمنع التداخل وتغطية زر Copy
-  function removeDuplicateFloatingButtons() {
-    document.querySelectorAll('button, a, div').forEach(el => {
-      if (el.id === 'nt-ai-trigger' || el.id === 'nt-ai-wrapper' || el.closest('#nt-ai-wrapper')) return;
-      const txt = (el.innerText || '').trim();
-      const style = window.getComputedStyle(el);
-      if ((txt.includes('Ask AI Assistant') || txt.includes('اسأل المساعد الذكي') || txt === '✨ NeuralTech AI' || txt === 'NeuralTech AI ✨') &&
-          (style.position === 'fixed' || el.className.toLowerCase().includes('float') || el.className.toLowerCase().includes('fab') || el.className.toLowerCase().includes('widget'))) {
-        el.style.display = 'none';
-      }
-    });
-  }
-
-  // 2. تنظيف شامل لأي كلمة بوت أو Bot
-  function cleanBotWords() {
-    const pairs = [
-      ["اسأل بوت الموقع أو اترك تعليقك", "شارك برأيك أو استفسر حول المقال"],
-      ["إرسال النقاش لـ NeuralTech AI ✨", "نشر المشاركة ✨"],
-      ["Ask the AI Bot or Leave a Comment", "Join the Discussion or Ask a Question"],
-      ["Post & Get Bot Reply", "Post Comment ✨"],
-      [" / Ask anything...", ""]
-    ];
-    document.querySelectorAll('h1, h2, h3, h4, button, p, span, label').forEach(el => {
-      if (el.children.length === 0 || el.tagName === 'BUTTON' || el.tagName.startsWith('H')) {
-        let html = el.innerHTML;
-        pairs.forEach(([a, b]) => { if (html.includes(a)) html = html.split(a).join(b); });
-        el.innerHTML = html;
-      }
-    });
-  }
-
-  // 3. شريط إحصائيات الزيارات العالمي (Live Telemetry)
-  function injectTelemetry() {
-    if (document.getElementById('nt-telemetry-bar')) return;
-    const key = (window.location.pathname.replace(/[^a-zA-Z0-9]/g, '_') || 'index');
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) hash = ((hash << 5) - hash) + key.charCodeAt(i);
-    let base = 1640 + (Math.abs(hash) % 850);
-    let local = parseInt(localStorage.getItem('nt_v_' + key) || '0', 10) + 1;
-    localStorage.setItem('nt_v_' + key, local);
-    let total = base + local;
-    let active = 5 + (new Date().getMinutes() % 8);
-
-    const bar = document.createElement('div');
-    bar.id = 'nt-telemetry-bar';
-    bar.style.textAlign = 'center';
-    bar.style.width = '100%';
-    bar.innerHTML = isEn
-      ? `<div class="nt-telemetry-badge"><span class="nt-live-dot"></span><span><b>${active}</b> active readers</span><span>•</span><span>👁️ <b>${total.toLocaleString()}</b> verified reads</span></div>`
-      : `<div class="nt-telemetry-badge"><span class="nt-live-dot"></span><span>يتصفح الآن: <b>${active}</b> قراء</span><span>•</span><span>👁️ إجمالي القراءات: <b>${total.toLocaleString()}</b></span></div>`;
-    const header = document.querySelector('header, nav');
-    if (header && header.parentNode) header.parentNode.insertBefore(bar, header.nextSibling);
-  }
-
-  // 4. ردود بشرية تفاعلية فورية في نافذة الدردشة والتعليقات دون أي أخطاء
-  function humanLikeReply(qText) {
-    const q = qText.trim().toLowerCase();
-    const h1 = document.querySelector('h1') ? document.querySelector('h1').innerText.trim() : 'NeuralTech AI';
-    if (isEn) {
-      if (/^(hi|hello|hey|greetings)/.test(q)) return `Hello! Welcome to NeuralTech AI. We're looking at "${h1}". Feel free to ask about the Python implementation or architectural design!`;
-      if (q.includes('code') || q.includes('python')) return `The Python module in "${h1}" is strictly verified via AST parsing and uses clean dataclasses and type hints so you can deploy it directly. Which method would you like to explore?`;
-      return `Great question regarding "${h1}"! Combining modular Python design with real-time verification ensures high availability and zero defects in production. How are you planning to apply this in your stack?`;
-    }
-    if (/^(سلام|السلام|مرحبا|اهلا|أهلا|هلا|صباح|مساء)/.test(q)) {
-      return `وعليكم السلام ورحمة الله! أهلاً بك يا صديقي في نيورال تك. يسعدني جداً النقاش معك حول «${h1}» أو أي شيفرة برمجية في المقال. تفضل، كيف يمكنني مساعدتك؟`;
-    }
-    if (q.includes('مستجدات') || q.includes('جديد') || q.includes('اخبار') || q.includes('أخبار')) {
-      return `أهم المستجدات حالياً هي الاعتماد على الوكلاء المستقلين (Autonomous Agents) وأنظمة الاسترجاع الدلالي (RAG) مع التدقيق الآلي للشيفرات عبر أشجار الإعراب (AST) لضمان خلو الأنظمة من الأخطاء. ما رأيك في هذا التوجه؟`;
-    }
-    if (q.includes('كود') || q.includes('بايثون') || q.includes('شرح')) {
-      return `الكود المرفق في مقال «${h1}» كُتب بلغة بايثون القياسية وتم فحصه برمجياً عبر محلل AST ليعمل معك فوراً في بيئة Termux أو السحابة دون أي تعقيد. هل نناقش دالة معينة بداخله؟`;
-    }
-    return `نقطة ممتازة جداً! في سياق «${h1}»، تطبيق هذه الهندسة البرمجية يمنح النظام سرعة استجابة عالية واستقراراً تاماً تحت الضغط. هل جربت تشغيل الكود التطبيقي المرفق في المقال؟`;
-  }
-
-  window.sendMsg = function() {
-    const inp = document.getElementById('nt-ai-input');
-    const box = document.getElementById('nt-ai-chatbox');
-    if (!inp || !box) return;
-    const txt = inp.value.trim();
-    if (!txt) return;
-    box.innerHTML += `<div style="background:#2563eb;color:#fff;padding:9px 14px;border-radius:12px;max-width:82%;align-self:flex-end;margin-bottom:6px;text-align:right;">${txt}</div>`;
-    inp.value = '';
-    box.scrollTop = box.scrollHeight;
-    setTimeout(() => {
-      const reply = humanLikeReply(txt);
-      box.innerHTML += `<div style="background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:12px;max-width:86%;align-self:flex-start;line-height:1.65;text-align:${isEn?'left':'right'};">${reply}</div>`;
-      box.scrollTop = box.scrollHeight;
-    }, 280);
-  };
-
-  function runAll() {
-    removeDuplicateFloatingButtons();
-    cleanBotWords();
-    injectTelemetry();
-    setTimeout(removeDuplicateFloatingButtons, 500);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runAll);
-  else runAll();
-})();
-</script>
-
 </body>
 </html>
