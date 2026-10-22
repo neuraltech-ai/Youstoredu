@@ -194,8 +194,8 @@
                 const fileName = database[searchID];
                 resultText.innerText = `✅ الخطاطة متوفرة: ${currentSubject} | المستوى ${level} | المرحلة ${stage} | الأسبوع ${week} | الحصة ${session}`;
                 
-                // تعديل رابط المعاينة ليفتح مباشرة عبر عارض غوغل المدمج دون إزعاج التحميل
-                pdfViewer.href = `https://docs.google.com/viewer?url=https://neuraltech-ai.github.io/youstoredu/${fileName}&embedded=true`;
+                // ربط مباشر بملف الـ PDF لفتحه في متصفح الهاتف أو عارض النظام مباشرة
+                pdfViewer.href = fileName;
                 
                 downloadBtn.href = fileName;
                 pdfContainer.classList.remove('hidden');
