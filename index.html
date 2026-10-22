@@ -76,7 +76,7 @@
             <p id="result-text" class="font-bold text-blue-900 mb-4 text-sm leading-relaxed"></p>
             
             <div id="pdf-container" class="space-y-3">
-                <a id="pdf-viewer" href="#" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
+                <a id="pdf-viewer" href="#" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
                     🔍 معاينة الخطاطة (PDF)
                 </a>
                 <a id="download-btn" href="#" download class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
@@ -194,9 +194,12 @@
                 const fileName = database[searchID];
                 resultText.innerText = `✅ الخطاطة متوفرة: ${currentSubject} | المستوى ${level} | المرحلة ${stage} | الأسبوع ${week} | الحصة ${session}`;
                 
-                // توجيه الرابط لعارض غوغل المباشر لمنع التطبيق من فتح رسالة التحميل المباشر
-                const pdfUrl = `https://neuraltech-ai.github.io/youstoredu/${fileName}`;
-                pdfViewer.href = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+                // استخدام رابط مباشر مع دالة برمجية تفتح الملف في عارض متصفح الهاتف فوراً
+                pdfViewer.href = fileName;
+                pdfViewer.onclick = function(e) {
+                    e.preventDefault();
+                    window.open(fileName, '_system');
+                };
                 
                 downloadBtn.href = fileName;
                 pdfContainer.classList.remove('hidden');
