@@ -5,34 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة الخطاطات الذهنية - YouStor Edu</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <!-- مكتبة PDF.js لعرض الملفات داخل التطبيق بدون نوافذ تحميل -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Tajawal', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen pb-12">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen pb-12 transition-colors duration-300">
 
-    <header class="bg-blue-600 text-white py-8 px-4 shadow-md text-center">
-        <h1 class="text-3xl font-extrabold tracking-wide mb-2">منصة الخطاطات الذهنية</h1>
-        <p class="text-blue-100 text-base font-medium">YouStor Edu - لجميع المستويات الابتدائية</p>
+    <!-- الهيدر مع زر الوضع الليلي -->
+    <header class="bg-blue-600 dark:bg-slate-800 text-white py-6 px-4 shadow-md relative transition-colors duration-300">
+        <div class="max-w-md mx-auto flex justify-between items-center mb-2">
+            <span class="text-xs bg-blue-700 dark:bg-slate-700 px-3 py-1 rounded-full font-bold">YouStor Edu</span>
+            <button onclick="toggleDarkMode()" id="theme-toggle-btn" class="bg-blue-700 dark:bg-slate-700 hover:bg-blue-800 dark:hover:bg-slate-600 text-white px-3.5 py-1.5 rounded-xl text-sm font-bold flex items-center gap-1.5 shadow-sm transition">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">الوضع الليلي</span>
+            </button>
+        </div>
+        <div class="text-center mt-2">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-wide mb-1">منصة الخطاطات الذهنية</h1>
+            <p class="text-blue-100 dark:text-slate-300 text-sm font-medium">لجميع المستويات الابتدائية</p>
+        </div>
     </header>
 
-    <main class="max-w-md mx-auto p-6 mt-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+    <!-- شريط تحميل التطبيق من الموقع -->
+    <div class="max-w-md mx-auto px-4 mt-4">
+        <a href="YouStor_Edu.apk" download class="flex items-center justify-between bg-gradient-to-l from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white p-3.5 rounded-2xl shadow-md transition transform active:scale-95">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl bg-white/20 p-2 rounded-xl">📲</span>
+                <div>
+                    <p class="font-extrabold text-sm">تطبيق YouStor Edu للأندرويد</p>
+                    <p class="text-xs text-blue-100">تصفح أسرع ووصول مباشر للخطاطات</p>
+                </div>
+            </div>
+            <span class="bg-white text-blue-700 font-extrabold text-xs px-3 py-2 rounded-xl shadow-sm">
+                تحميل APK
+            </span>
+        </a>
+    </div>
+
+    <!-- البطاقة الرئيسية -->
+    <main class="max-w-md mx-auto p-6 mt-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
         
         <div class="mb-6">
-            <label class="block font-bold text-gray-800 text-lg mb-3">1. اختر المادة الدراسية:</label>
+            <label class="block font-bold text-gray-800 dark:text-gray-100 text-lg mb-3">1. اختر المادة الدراسية:</label>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="selectSubject('اللغة الفرنسية')" id="sub-اللغة الفرنسية" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all shadow-sm bg-blue-600 text-white">اللغة الفرنسية</button>
-                <button onclick="selectSubject('اللغة العربية')" id="sub-اللغة العربية" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100">اللغة العربية</button>
-                <button onclick="selectSubject('النشاط العلمي')" id="sub-النشاط العلمي" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100">النشاط العلمي</button>
-                <button onclick="selectSubject('الرياضيات')" id="sub-الرياضيات" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100">الرياضيات</button>
+                <button onclick="selectSubject('اللغة العربية')" id="sub-اللغة العربية" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">اللغة العربية</button>
+                <button onclick="selectSubject('النشاط العلمي')" id="sub-النشاط العلمي" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">النشاط العلمي</button>
+                <button onclick="selectSubject('الرياضيات')" id="sub-الرياضيات" class="py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">الرياضيات</button>
             </div>
         </div>
 
         <div id="selectors-area" class="space-y-4">
             <div>
-                <label class="block font-bold text-gray-800 mb-1.5">2. المستوى الدراسي:</label>
-                <select id="level-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <label class="block font-bold text-gray-800 dark:text-gray-200 mb-1.5">2. المستوى الدراسي:</label>
+                <select id="level-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 text-gray-800 dark:text-white font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
                     <option value="1">المستوى الأول (1AEP)</option>
                     <option value="2" selected>المستوى الثاني (2AEP)</option>
                     <option value="3">المستوى الثالث (3AEP)</option>
@@ -43,8 +77,8 @@
             </div>
 
             <div>
-                <label class="block font-bold text-gray-800 mb-1.5">3. المرحلة:</label>
-                <select id="stage-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <label class="block font-bold text-gray-800 dark:text-gray-200 mb-1.5">3. المرحلة:</label>
+                <select id="stage-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 text-gray-800 dark:text-white font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
                     <option value="2" selected>المرحلة الثانية (P2 / الوحدة 1)</option>
                     <option value="3">المرحلة الثالثة (P3 / الوحدة 2)</option>
                     <option value="4">المرحلة الرابعة (P4 / الوحدة 3)</option>
@@ -54,8 +88,8 @@
             </div>
 
             <div>
-                <label class="block font-bold text-gray-800 mb-1.5">4. الأسبوع:</label>
-                <select id="week-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <label class="block font-bold text-gray-800 dark:text-gray-200 mb-1.5">4. الأسبوع:</label>
+                <select id="week-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 text-gray-800 dark:text-white font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
                     <option value="1" selected>الأسبوع الأول (S1)</option>
                     <option value="2">الأسبوع الثاني (S2)</option>
                     <option value="3">الأسبوع الثالث (S3)</option>
@@ -66,35 +100,82 @@
             </div>
 
             <div>
-                <label class="block font-bold text-gray-800 mb-1.5">5. الحصة:</label>
-                <select id="session-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 rounded-xl bg-slate-50 text-gray-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <label class="block font-bold text-gray-800 dark:text-gray-200 mb-1.5">5. الحصة:</label>
+                <select id="session-select" onchange="searchMindMap()" class="w-full p-3.5 border border-gray-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 text-gray-800 dark:text-white font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
                 </select>
             </div>
         </div>
 
-        <div id="result-area" class="mt-6 p-5 bg-blue-50/70 border border-blue-100 rounded-2xl text-center hidden">
-            <p id="result-text" class="font-bold text-blue-900 mb-4 text-sm leading-relaxed"></p>
+        <div id="result-area" class="mt-6 p-5 bg-blue-50/70 dark:bg-slate-700/60 border border-blue-100 dark:border-slate-600 rounded-2xl text-center hidden">
+            <p id="result-text" class="font-bold text-blue-900 dark:text-blue-200 mb-4 text-sm leading-relaxed"></p>
             
             <div id="pdf-container" class="space-y-3">
-                <button id="pdf-viewer-btn" onclick="openPdfViewer()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
-                    🔍 معاينة الخطاطة (PDF)
+                <button onclick="openPdfModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-sm transition">
+                    🔍 معاينة الخطاطة (مباشرة)
                 </button>
-                <a id="download-btn" href="#" download class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
-                    📥 تحميل الخطاطة
+                <a id="download-btn" href="#" download class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-sm transition">
+                    📥 تحميل الخطاطة (PDF)
                 </a>
             </div>
 
-            <p id="not-found-msg" class="text-amber-700 bg-amber-50 border border-amber-200 p-3 rounded-xl font-medium text-sm hidden">
+            <p id="not-found-msg" class="text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-3 rounded-xl font-medium text-sm hidden">
                 ⏳ هذه الخطاطة قيد الإعداد وسيتم رفعها قريباً.
             </p>
         </div>
 
     </main>
 
+    <!-- نافذة المعاينة الداخلية الذكية (تعمل داخل التطبيق بدون تنزيل إجباري) -->
+    <div id="pdf-modal" class="fixed inset-0 z-50 bg-black/85 hidden flex flex-col">
+        <!-- شريط التحكم العلوي للمعاينة -->
+        <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center shadow-md border-b border-slate-700">
+            <div class="flex items-center gap-2">
+                <button onclick="changeZoom(25)" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-sm font-bold">➕ تكبير</button>
+                <span id="zoom-level" class="text-xs font-mono bg-slate-800 px-2 py-1 rounded">100%</span>
+                <button onclick="changeZoom(-25)" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-sm font-bold">➖ تصغير</button>
+            </div>
+            <button onclick="closePdfModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm font-bold">
+                ✖ إغلاق
+            </button>
+        </div>
+
+        <!-- منطقة عرض صفحات الـ PDF -->
+        <div class="flex-1 overflow-auto p-3 text-center" id="pdf-scroll-Wrapper">
+            <div id="pdf-loading" class="text-white font-bold py-16 text-center">
+                ⏳ جاري فتح الخطاطة بدقة عالية...
+            </div>
+            <div id="pdf-pages-container" class="mx-auto"></div>
+        </div>
+    </div>
+
     <script>
+        // إعداد مكتبة PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
         let currentSubject = 'اللغة الفرنسية';
         let currentPdfUrl = '';
+        let currentZoom = 100;
         const subjects = ['اللغة الفرنسية', 'اللغة العربية', 'النشاط العلمي', 'الرياضيات'];
+
+        // إدارة الوضع الليلي
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                updateThemeUI(true);
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeUI(isDark);
+        }
+
+        function updateThemeUI(isDark) {
+            document.getElementById('theme-icon').innerText = isDark ? '☀️' : '🌙';
+            document.getElementById('theme-text').innerText = isDark ? 'الوضع النهاري' : 'الوضع الليلي';
+        }
 
         function selectSubject(sub) {
             currentSubject = sub;
@@ -103,7 +184,7 @@
                 if (s === sub) {
                     btn.className = "py-3.5 px-4 rounded-xl font-bold text-base transition-all shadow-sm bg-blue-600 text-white";
                 } else {
-                    btn.className = "py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-50 text-slate-700 hover:bg-slate-100";
+                    btn.className = "py-3.5 px-4 rounded-xl font-bold text-base transition-all bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200";
                 }
             });
             updateSessionsList();
@@ -200,18 +281,65 @@
             } else {
                 resultText.innerText = `${currentSubject} - المستوى ${level} - المرحلة ${stage} - الأسبوع ${week} - الحصة ${session}`;
                 pdfContainer.classList.add('hidden');
-                notFoundMsg.classList.add('hidden');
+                notFoundMsg.classList.remove('hidden');
             }
         }
 
-        function openPdfViewer() {
-            if (currentPdfUrl) {
-                // فتح الملف كزر تفاعلي يتجاوز حظر WebView لعرض الـ PDF
-                const fullUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + currentPdfUrl;
-                window.location.href = fullUrl;
+        // فتح وعرض الـ PDF كصور فائقة الدقة داخل التطبيق دون تفعيل التحميل الإجباري
+        async function openPdfModal() {
+            if (!currentPdfUrl) return;
+            const modal = document.getElementById('pdf-modal');
+            const pagesContainer = document.getElementById('pdf-pages-container');
+            const loadingIndicator = document.getElementById('pdf-loading');
+
+            modal.classList.remove('hidden');
+            pagesContainer.innerHTML = '';
+            loadingIndicator.innerHTML = '⏳ جاري فتح الخطاطة بدقة عالية...';
+            loadingIndicator.classList.remove('hidden');
+            currentZoom = 100;
+            document.getElementById('zoom-level').innerText = '100%';
+
+            try {
+                const loadingTask = pdfjsLib.getDocument(currentPdfUrl);
+                const pdf = await loadingTask.promise;
+                loadingIndicator.classList.add('hidden');
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 2.5 });
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'pdf-page-canvas mx-auto mb-4 shadow-lg rounded-lg bg-white';
+                    canvas.style.width = currentZoom + '%';
+                    canvas.style.maxWidth = 'none';
+                    canvas.style.height = 'auto';
+
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    pagesContainer.appendChild(canvas);
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                }
+            } catch (error) {
+                loadingIndicator.innerHTML = '❌ تعذر عرض المعاينة، يرجى التأكد من الاتصال بالإنترنت.';
             }
         }
 
+        function closePdfModal() {
+            document.getElementById('pdf-modal').classList.add('hidden');
+            document.getElementById('pdf-pages-container').innerHTML = '';
+        }
+
+        function changeZoom(delta) {
+            currentZoom = Math.min(300, Math.max(50, currentZoom + delta));
+            document.getElementById('zoom-level').innerText = currentZoom + '%';
+            const canvases = document.querySelectorAll('.pdf-page-canvas');
+            canvases.forEach(c => {
+                c.style.width = currentZoom + '%';
+            });
+        }
+
+        initTheme();
         updateSessionsList();
         searchMindMap();
     </script>
