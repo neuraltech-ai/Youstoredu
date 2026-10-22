@@ -194,11 +194,10 @@
                 const fileName = database[searchID];
                 resultText.innerText = `✅ الخطاطة متوفرة: ${currentSubject} | المستوى ${level} | المرحلة ${stage} | الأسبوع ${week} | الحصة ${session}`;
                 
-                // استخدام عارض PDF السريع والمضمون عبر الإنترنت لفتح المعاينة فوراً
-                const pdfUrl = `https://neuraltech-ai.github.io/youstoredu/${fileName}`;
-                pdfViewer.href = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
-                
+                // ربط مباشر بملف الـ PDF لفتحه واستعراضه بوضوح عبر المتصفح أو عارض الهاتف
+                pdfViewer.href = fileName;
                 downloadBtn.href = fileName;
+                
                 pdfContainer.classList.remove('hidden');
                 notFoundMsg.classList.add('hidden');
             } else {
