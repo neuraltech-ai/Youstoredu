@@ -343,5 +343,91 @@
         updateSessionsList();
         searchMindMap();
     </script>
+<!-- YOUSTOR_PRO_PATCH_START -->
+<style>
+    /* تحسين معاينة الخطاطات والسماح بالتكبير والتمرير الحر في جميع الاتجاهات */
+    #pdf-pages-container {
+        overflow: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        display: block !important;
+        text-align: center !important;
+    }
+    .pdf-page-canvas {
+        max-width: none !important;
+        height: auto !important;
+        display: inline-block !important;
+        margin: 0 auto !important;
+        transform-origin: top center;
+    }
+</style>
+<script>
+(function() {
+    // 1. إخفاء بطاقة تحميل الـ APK داخل التطبيق فقط دون المساس بحاوية الصفحة
+    function hideApkBannerInAppOnly() {
+        var ua = navigator.userAgent || "";
+        var isInsideApp = /; wv\)|WebIntoApp|Version\/\d+\.\d+.*Chrome/i.test(ua) ||
+                          window.matchMedia('(display-mode: standalone)').matches ||
+                          window.navigator.standalone === true;
+        if (!isInsideApp) return;
+
+        var apkLinks = document.querySelectorAll('a[href*=".apk"], a[download*="apk" i], a[href*="YouStor_Edu"]');
+        apkLinks.forEach(function(link) {
+            var el = link.parentElement;
+            while (el && el !== document.body) {
+                // نتوقف عند البطاقة البنفسجية المباشرة التي لا تحتوي على أزرار المواد أو القوائم
+                if (el.querySelectorAll('select, button').length === 0 && el.tagName === 'DIV') {
+                    var parent = el.parentElement;
+                    if (!parent || parent.querySelectorAll('select, button').length > 0 || parent === document.body) {
+                        el.style.setProperty('display', 'none', 'important');
+                        break;
+                    }
+                }
+                el = el.parentElement;
+            }
+        });
+    }
+    hideApkBannerInAppOnly();
+    document.addEventListener('DOMContentLoaded', hideApkBannerInAppOnly);
+
+    // 2. دعم الخطوط العربية المتصلة ومنع تقطع الحروف في PDF.js
+    if (window.pdfjsLib) {
+        var ver = pdfjsLib.version || '3.11.174';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + ver + '/pdf.worker.min.js';
+        var origGetDoc = pdfjsLib.getDocument.bind(pdfjsLib);
+        pdfjsLib.getDocument = function(src) {
+            var params = (typeof src === 'string') ? { url: src } : Object.assign({}, src);
+            params.cMapUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + ver + '/cmaps/';
+            params.cMapPacked = true;
+            params.standardFontDataUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + ver + '/standard_fonts/';
+            params.disableAutoFetch = false;
+            params.isEvalSupported = false;
+            return origGetDoc(params);
+        };
+    }
+
+    // 3. ضبط دقة الرسم (Scale) لمنع استنزاف ذاكرة المتصفح والتشنج على الهواتف
+    var origGetContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function(type, attrs) {
+        if (type === '2d') {
+            attrs = Object.assign({ willReadFrequently: true, alpha: false }, attrs || {});
+        }
+        return origGetContext.call(this, type, attrs);
+    };
+
+    // 4. تفريغ ذاكرة الـ Canvas بالكامل عند إغلاق المعاينة أو تبديل الخطاطة
+    var origCloseModal = window.closePdfModal;
+    window.closePdfModal = function() {
+        document.querySelectorAll('.pdf-page-canvas, #pdf-pages-container canvas').forEach(function(c) {
+            var ctx = c.getContext('2d');
+            if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+            c.width = 0;
+            c.height = 0;
+            c.remove();
+        });
+        if (origCloseModal) origCloseModal();
+    };
+})();
+</script>
+<!-- YOUSTOR_PRO_PATCH_END -->
 </body>
 </html>
