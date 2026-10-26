@@ -401,10 +401,8 @@
         var allDivs = document.querySelectorAll('div');
         allDivs.forEach(function(div) {
             var txt = div.innerText || "";
-            if (txt.indexOf("APK") !== -1 && txt.indexOf("الأندرويد") !== -1 && txt.indexOf("اختر المادة") === -1) {
-                if (div.querySelectorAll('select').length === 0) {
-                    div.style.setProperty('display', 'none', 'important');
-                }
+            if (txt.indexOf("APK") !== -1 && txt.indexOf("YouStor") !== -1 && div.querySelectorAll('select').length === 0) {
+                div.style.setProperty('display', 'none', 'important');
             }
         });
     }
