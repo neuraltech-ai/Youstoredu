@@ -551,47 +551,75 @@
 </script>
 <!-- YOUSTOR_PRO_PATCH_END -->
 
-<script id="es-two-sessions-limiter">
-(function() {
-    function initEsSessionLimiter() {
-        var selects = document.querySelectorAll('select');
-        if (selects.length < 5) return;
-        var subjectSelect = selects[0];
-        var sessionSelect = selects[4];
-        var allOptions = Array.from(sessionSelect.options).map(function(opt) {
-            return { value: opt.value, text: opt.text };
-        });
 
-        function updateSessionOptions() {
-            var isES = (subjectSelect.value || "").indexOf("النشاط العلمي") !== -1;
+
+
+<script id="es-two-sessions-limiter">
+document.addEventListener("DOMContentLoaded", function() {
+    function setupLimiter() {
+        // البحث عن جميع القوائم المنسدلة في الصفحة
+        var selects = document.querySelectorAll("select");
+        if (selects.length === 0) return;
+        
+        // عادة تكون قائمة المواد هي الأولى وقائمة الحصص هي الأخيرة أو قبل الأخيرة
+        var subjectSelect = null;
+        var sessionSelect = null;
+        
+        selects.forEach(function(sel) {
+            var text = sel.innerText || "";
+            if (text.indexOf("النشاط العلمي") !== -1 || text.indexOf("الرياضيات") !== -1 || text.indexOf("اللغة العربية") !== -1) {
+                subjectSelect = sel;
+            }
+            if (text.indexOf("الحصة الأولى") !== -1 || text.indexOf("الحصة (1)") !== -1 || sel.options.length >= 5) {
+                sessionSelect = sel;
+            }
+        });
+        
+        if (!subjectSelect || !sessionSelect) return;
+        
+        // حفظ الخيارات الأصلية كاملة
+        if (!sessionSelect.dataset.fullOptions) {
+            sessionSelect.dataset.fullOptions = JSON.stringify(Array.from(sessionSelect.options).map(o => ({val: o.value, txt: o.text})));
+        }
+        
+        var fullOpts = JSON.parse(sessionSelect.dataset.fullOptions);
+        
+        function filterSessions() {
+            var subVal = subjectSelect.value || subjectSelect.options[subjectSelect.selectedIndex].text;
+            var isES = subVal.indexOf("النشاط العلمي") !== -1;
+            
             var currentVal = sessionSelect.value;
             sessionSelect.innerHTML = "";
-            allOptions.forEach(function(item) {
-                var num = parseInt(item.value, 10);
-                if (!isES || isNaN(num) || num <= 2) {
+            
+            fullOpts.forEach(function(optData) {
+                var matchNum = optData.txt.match(/\d+/);
+                var num = matchNum ? parseInt(matchNum[0], 10) : 0;
+                
+                if (!isES || (num > 0 && num <= 2)) {
                     var opt = document.createElement("option");
-                    opt.value = item.value;
-                    opt.text = item.text;
+                    opt.value = optData.val;
+                    opt.text = optData.txt;
                     sessionSelect.appendChild(opt);
                 }
             });
+            
+            // إعادة ضبط القيمة المتاحة
             if (isES && parseInt(currentVal, 10) > 2) {
-                sessionSelect.value = "1";
-                sessionSelect.dispatchEvent(new Event("change"));
+                sessionSelect.value = sessionSelect.options[0].value;
             } else {
                 sessionSelect.value = currentVal;
             }
+            sessionSelect.dispatchEvent(new Event("change"));
         }
-
-        subjectSelect.addEventListener("change", updateSessionOptions);
-        updateSessionOptions();
+        
+        subjectSelect.addEventListener("change", filterSessions);
+        filterSessions();
     }
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initEsSessionLimiter);
-    } else {
-        initEsSessionLimiter();
-    }
-})();
+    
+// ينفذ بعد تحميل العناصر بالكامل
+    setTimeout(setupLimiter, 500);
+    setTimeout(setupLimiter, 1500);
+});
 </script>
 
 </body>
