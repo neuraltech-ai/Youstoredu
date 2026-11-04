@@ -554,72 +554,77 @@
 
 
 
+
 <script id="es-two-sessions-limiter">
-document.addEventListener("DOMContentLoaded", function() {
-    function setupLimiter() {
-        // البحث عن جميع القوائم المنسدلة في الصفحة
+(function() {
+    var savedOptions = null;
+    var activeSubject = "";
+
+    function getSessionSelect() {
         var selects = document.querySelectorAll("select");
-        if (selects.length === 0) return;
-        
-        // عادة تكون قائمة المواد هي الأولى وقائمة الحصص هي الأخيرة أو قبل الأخيرة
-        var subjectSelect = null;
-        var sessionSelect = null;
-        
-        selects.forEach(function(sel) {
-            var text = sel.innerText || "";
-            if (text.indexOf("النشاط العلمي") !== -1 || text.indexOf("الرياضيات") !== -1 || text.indexOf("اللغة العربية") !== -1) {
-                subjectSelect = sel;
+        for (var i = 0; i < selects.length; i++) {
+            if ((selects[i].innerText || "").indexOf("الحصة") !== -1) {
+                return selects[i];
             }
-            if (text.indexOf("الحصة الأولى") !== -1 || text.indexOf("الحصة (1)") !== -1 || sel.options.length >= 5) {
-                sessionSelect = sel;
+        }
+        return selects.length ? selects[selects.length - 1] : null;
+    }
+
+    function detectCurrentSubject() {
+        if (activeSubject) return activeSubject;
+        var bodyText = document.body.innerText || "";
+        var m = bodyText.match(/الخطاطة[^:]*:\s*([^|\n]+)/);
+        if (m) return m[1].trim();
+        return "";
+    }
+
+    function applySessionLimit(subjName) {
+        var sessionSelect = getSessionSelect();
+        if (!sessionSelect) return;
+
+        if (!savedOptions) {
+            savedOptions = Array.from(sessionSelect.options).map(function(o) {
+                return { value: o.value, text: o.text };
+            });
+        }
+
+        var isES = (subjName || detectCurrentSubject()).indexOf("النشاط العلمي") !== -1;
+        var prevValue = sessionSelect.value;
+
+        sessionSelect.innerHTML = "";
+        savedOptions.forEach(function(item, idx) {
+            var m = item.text.match(/\d+/);
+            var num = m ? parseInt(m[0], 10) : (idx + 1);
+            if (!isES || num <= 2) {
+                var opt = document.createElement("option");
+                opt.value = item.value;
+                opt.text = item.text;
+                sessionSelect.appendChild(opt);
             }
         });
-        
-        if (!subjectSelect || !sessionSelect) return;
-        
-        // حفظ الخيارات الأصلية كاملة
-        if (!sessionSelect.dataset.fullOptions) {
-            sessionSelect.dataset.fullOptions = JSON.stringify(Array.from(sessionSelect.options).map(o => ({val: o.value, txt: o.text})));
-        }
-        
-        var fullOpts = JSON.parse(sessionSelect.dataset.fullOptions);
-        
-        function filterSessions() {
-            var subVal = subjectSelect.value || subjectSelect.options[subjectSelect.selectedIndex].text;
-            var isES = subVal.indexOf("النشاط العلمي") !== -1;
-            
-            var currentVal = sessionSelect.value;
-            sessionSelect.innerHTML = "";
-            
-            fullOpts.forEach(function(optData) {
-                var matchNum = optData.txt.match(/\d+/);
-                var num = matchNum ? parseInt(matchNum[0], 10) : 0;
-                
-                if (!isES || (num > 0 && num <= 2)) {
-                    var opt = document.createElement("option");
-                    opt.value = optData.val;
-                    opt.text = optData.txt;
-                    sessionSelect.appendChild(opt);
-                }
-            });
-            
-            // إعادة ضبط القيمة المتاحة
-            if (isES && parseInt(currentVal, 10) > 2) {
-                sessionSelect.value = sessionSelect.options[0].value;
-            } else {
-                sessionSelect.value = currentVal;
-            }
-            sessionSelect.dispatchEvent(new Event("change"));
-        }
-        
-        subjectSelect.addEventListener("change", filterSessions);
-        filterSessions();
+
+        var stillExists = Array.from(sessionSelect.options).some(function(o) {
+            return o.value === prevValue;
+        });
+        sessionSelect.value = stillExists ? prevValue : sessionSelect.options[0].value;
+        sessionSelect.dispatchEvent(new Event("change"));
     }
-    
-// ينفذ بعد تحميل العناصر بالكامل
-    setTimeout(setupLimiter, 500);
-    setTimeout(setupLimiter, 1500);
-});
+
+    document.addEventListener("click", function(e) {
+        var el = e.target.closest("button, div, a, span");
+        if (!el) return;
+        var txt = (el.innerText || "").trim();
+        var subjects = ["اللغة العربية", "اللغة الفرنسية", "الرياضيات", "النشاط العلمي"];
+        if (subjects.indexOf(txt) !== -1) {
+            activeSubject = txt;
+            setTimeout(function() { applySessionLimit(txt); }, 50);
+        }
+    }, true);
+
+    window.addEventListener("load", function() {
+        setTimeout(function() { applySessionLimit(""); }, 300);
+    });
+})();
 </script>
 
 </body>
