@@ -555,6 +555,7 @@
 
 
 
+
 <script id="es-two-sessions-limiter">
 (function() {
     var savedOptions = null;
@@ -588,14 +589,21 @@
             });
         }
 
-        var isES = (subjName || detectCurrentSubject()).indexOf("النشاط العلمي") !== -1;
-        var prevValue = sessionSelect.value;
+        var subj = subjName || detectCurrentSubject();
+        var maxSessions = 6;
+        if (subj.indexOf("النشاط العلمي") !== -1) {
+            maxSessions = 2;
+        } else if (subj.indexOf("الرياضيات") !== -1) {
+            maxSessions = 5;
+        }
 
+        var prevValue = sessionSelect.value;
         sessionSelect.innerHTML = "";
+
         savedOptions.forEach(function(item, idx) {
             var m = item.text.match(/\d+/);
             var num = m ? parseInt(m[0], 10) : (idx + 1);
-            if (!isES || num <= 2) {
+            if (num <= maxSessions) {
                 var opt = document.createElement("option");
                 opt.value = item.value;
                 opt.text = item.text;
