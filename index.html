@@ -274,6 +274,28 @@
                 "الرياضيات-2-1-3-4": "MATH_N2_P2_U1_SEM3_S4_NCM14.pdf",
                 "الرياضيات-2-1-3-5": "MATH_N2_P2_U1_SEM3_S5_NCM15.pdf",
     "اللغة الفرنسية-2-2-3-1": "FR_N2_P2_U1_SEM3_S1_NCM13.pdf",
+                "اللغة الفرنسية-6-2-2-1": "FR_N6_P2_U1_SEM2_S1_NCM7.pdf",
+                "اللغة الفرنسية-6-1-2-1": "FR_N6_P2_U1_SEM2_S1_NCM7.pdf",
+                "اللغة الفرنسية-6-2-2-2": "FR_N6_P2_U1_SEM2_S2_NCM8.pdf",
+                "اللغة الفرنسية-6-1-2-2": "FR_N6_P2_U1_SEM2_S2_NCM8.pdf",
+                "اللغة الفرنسية-6-2-2-3": "FR_N6_P2_U1_SEM2_S3_NCM9.pdf",
+                "اللغة الفرنسية-6-1-2-3": "FR_N6_P2_U1_SEM2_S3_NCM9.pdf",
+                "اللغة الفرنسية-6-2-2-4": "FR_N6_P2_U1_SEM2_S4_NCM10.pdf",
+                "اللغة الفرنسية-6-1-2-4": "FR_N6_P2_U1_SEM2_S4_NCM10.pdf",
+                "اللغة الفرنسية-6-2-2-5": "FR_N6_P2_U1_SEM2_S5_NCM11.pdf",
+                "اللغة الفرنسية-6-1-2-5": "FR_N6_P2_U1_SEM2_S5_NCM11.pdf",
+                "اللغة الفرنسية-6-2-2-6": "FR_N6_P2_U1_SEM2_S6_NCM12.pdf",
+                "اللغة الفرنسية-6-1-2-6": "FR_N6_P2_U1_SEM2_S6_NCM12.pdf",
+                "الرياضيات-6-2-2-1": "MATH_N6_P2_U1_SEM2_S1_NCM6.pdf",
+                "الرياضيات-6-1-2-1": "MATH_N6_P2_U1_SEM2_S1_NCM6.pdf",
+                "الرياضيات-6-2-2-2": "MATH_N6_P2_U1_SEM2_S2_NCM7.pdf",
+                "الرياضيات-6-1-2-2": "MATH_N6_P2_U1_SEM2_S2_NCM7.pdf",
+                "الرياضيات-6-2-2-3": "MATH_N6_P2_U1_SEM2_S3_NCM8.pdf",
+                "الرياضيات-6-1-2-3": "MATH_N6_P2_U1_SEM2_S3_NCM8.pdf",
+                "الرياضيات-6-2-2-4": "MATH_N6_P2_U1_SEM2_S4_NCM9.pdf",
+                "الرياضيات-6-1-2-4": "MATH_N6_P2_U1_SEM2_S4_NCM9.pdf",
+                "الرياضيات-6-2-2-5": "MATH_N6_P2_U1_SEM2_S5_NCM10.pdf",
+                "الرياضيات-6-1-2-5": "MATH_N6_P2_U1_SEM2_S5_NCM10.pdf",
                 "الرياضيات-1-2-2-1": "MATH_N1_P2_U1_SEM2_S1_NCM6.pdf",
                 "الرياضيات-1-1-2-1": "MATH_N1_P2_U1_SEM2_S1_NCM6.pdf",
                 "الرياضيات-1-2-2-2": "MATH_N1_P2_U1_SEM2_S2_NCM7.pdf",
@@ -528,5 +550,49 @@
 })();
 </script>
 <!-- YOUSTOR_PRO_PATCH_END -->
+
+<script id="es-two-sessions-limiter">
+(function() {
+    function initEsSessionLimiter() {
+        var selects = document.querySelectorAll('select');
+        if (selects.length < 5) return;
+        var subjectSelect = selects[0];
+        var sessionSelect = selects[4];
+        var allOptions = Array.from(sessionSelect.options).map(function(opt) {
+            return { value: opt.value, text: opt.text };
+        });
+
+        function updateSessionOptions() {
+            var isES = (subjectSelect.value || "").indexOf("النشاط العلمي") !== -1;
+            var currentVal = sessionSelect.value;
+            sessionSelect.innerHTML = "";
+            allOptions.forEach(function(item) {
+                var num = parseInt(item.value, 10);
+                if (!isES || isNaN(num) || num <= 2) {
+                    var opt = document.createElement("option");
+                    opt.value = item.value;
+                    opt.text = item.text;
+                    sessionSelect.appendChild(opt);
+                }
+            });
+            if (isES && parseInt(currentVal, 10) > 2) {
+                sessionSelect.value = "1";
+                sessionSelect.dispatchEvent(new Event("change"));
+            } else {
+                sessionSelect.value = currentVal;
+            }
+        }
+
+        subjectSelect.addEventListener("change", updateSessionOptions);
+        updateSessionOptions();
+    }
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initEsSessionLimiter);
+    } else {
+        initEsSessionLimiter();
+    }
+})();
+</script>
+
 </body>
 </html>
